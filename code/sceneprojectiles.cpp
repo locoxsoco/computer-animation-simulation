@@ -28,12 +28,15 @@ SceneProjectiles::~SceneProjectiles() {
     if (vboTrajectoryPoints) delete vboTrajectoryPoints;
     if (integrator1) delete integrator1;
     if (integrator2) delete integrator2;
+    if (integrator3) delete integrator3;
     systemAnalytic.deleteParticles();
     systemAnalytic.deleteForces();
     systemNumerical1.deleteParticles();
     systemNumerical1.deleteForces();
     systemNumerical2.deleteParticles();
     systemNumerical2.deleteForces();
+    systemNumerical3.deleteParticles();
+    systemNumerical3.deleteForces();
 }
 
 void SceneProjectiles::initialize() {
@@ -81,15 +84,18 @@ void SceneProjectiles::initialize() {
      */
 
     // create the different systems, with one particle each
-    systemAnalytic.addParticle(new Particle(Vec3( 0, 0, 0), Vec3(0,0,0), 1));
-    systemAnalytic.getParticle(0)->color = Vec3(0, 0.5, 0);
+    systemAnalytic.addParticle(new Particle(Vec3( 0, 0, -15), Vec3(0,0,0), 1));
+    systemAnalytic.getParticle(0)->color = Vec3(1.0, 1.0, 1.0);
     systemAnalytic.getParticle(0)->radius = 2;
-    systemNumerical1.addParticle(new Particle(Vec3( 0, 0, 15), Vec3(0,0,0), 1));
+    systemNumerical1.addParticle(new Particle(Vec3( 0, 0, -5), Vec3(0,0,0), 1));
     systemNumerical1.getParticle(0)->color = Vec3(0.5, 0, 0);
     systemNumerical1.getParticle(0)->radius = 2;
-    systemNumerical2.addParticle(new Particle(Vec3( 0, 0, -15), Vec3(0,0,0), 1));
-    systemNumerical2.getParticle(0)->color = Vec3(0, 0, 0.5);
+    systemNumerical2.addParticle(new Particle(Vec3( 0, 0, 5), Vec3(0,0,0), 1));
+    systemNumerical2.getParticle(0)->color = Vec3(0, 0.5, 0);
     systemNumerical2.getParticle(0)->radius = 2;
+    systemNumerical3.addParticle(new Particle(Vec3( 0, 0, 15), Vec3(0,0,0), 1));
+    systemNumerical3.getParticle(0)->color = Vec3(0, 0, 0.5);
+    systemNumerical3.getParticle(0)->radius = 2;
 
     // only one force: gravity, but we need to create one per system to assign its particle
     fGravity1 = new ForceConstAcceleration(Vec3(0, -gravityAccel, 0));
@@ -99,6 +105,10 @@ void SceneProjectiles::initialize() {
     fGravity2 = new ForceConstAcceleration(Vec3(0, -gravityAccel, 0));
     fGravity2->addInfluencedParticle(systemNumerical2.getParticle(0));
     systemNumerical2.addForce(fGravity2);
+
+    fGravity3 = new ForceConstAcceleration(Vec3(0, -gravityAccel, 0));
+    fGravity3->addInfluencedParticle(systemNumerical3.getParticle(0));
+    systemNumerical3.addForce(fGravity3);
 
 }
 
@@ -132,20 +142,24 @@ void SceneProjectiles::reset() {
 
     // update initial particle positions
     const double zdist = 15;
-    systemAnalytic.getParticle(0)->pos = Vec3(0, shotHeight, 0);
+    systemAnalytic.getParticle(0)->pos = Vec3(0, shotHeight, -zdist);
     systemAnalytic.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
-    systemNumerical1.getParticle(0)->pos = Vec3(0, shotHeight, zdist);
+    systemNumerical1.getParticle(0)->pos = Vec3(0, shotHeight, -zdist/3);
     systemNumerical1.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
-    systemNumerical2.getParticle(0)->pos = Vec3(0, shotHeight, -zdist);
+    systemNumerical2.getParticle(0)->pos = Vec3(0, shotHeight, zdist/3);
     systemNumerical2.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
+    systemNumerical3.getParticle(0)->pos = Vec3(0, shotHeight, zdist);
+    systemNumerical3.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
 
     // update gravity accelerations
     fGravity1->setAcceleration(Vec3(0, -gravityAccel, 0));
     fGravity2->setAcceleration(Vec3(0, -gravityAccel, 0));
+    fGravity3->setAcceleration(Vec3(0, -gravityAccel, 0));
 
     // update system forces
     systemNumerical1.updateForces();
     systemNumerical2.updateForces();
+    systemNumerical3.updateForces();
 
     // trajectories
     trajectoryAnalytic.clear();
@@ -154,10 +168,13 @@ void SceneProjectiles::reset() {
     trajectoryNumerical1.push_back(systemNumerical1.getParticle(0)->pos);
     trajectoryNumerical2.clear();
     trajectoryNumerical2.push_back(systemNumerical2.getParticle(0)->pos);
+    trajectoryNumerical3.clear();
+    trajectoryNumerical3.push_back(systemNumerical3.getParticle(0)->pos);
 
     // put particles to run
     system1active = true;
     system2active = true;
+    system3active = true;
 
     // reset timer
     time = 0;
@@ -229,12 +246,34 @@ void SceneProjectiles::update(double dt) {
         }
     }
 
+    if (system3active) {
+        // integration step
+        integrator3->step(systemNumerical3, dt);
+
+        // collision test
+        Particle* p = systemNumerical3.getParticle(0);
+        if (p->pos.y() < 0) {
+            // resolve
+            // TODO
+
+            // stop sim for this system
+            system3active = false;
+        }
+
+        // record trajectory
+        trajectoryNumerical3.push_back(p->pos);
+        if (trajectoryNumerical3.size() > MAX_TRAJ_POINTS) {
+            trajectoryNumerical3.pop_front();
+        }
+    }
+
 
     // print particle heights
     std::cout << "time: " << time << std::endl;
     std::cout << "analytic sol: " << systemAnalytic.getParticle(0)->pos[1] << std::endl;
     std::cout << "numerical 1: " << systemNumerical1.getParticle(0)->pos[1] << std::endl;
     std::cout << "numerical 2: " << systemNumerical2.getParticle(0)->pos[1] << std::endl;
+    std::cout << "numerical 3: " << systemNumerical3.getParticle(0)->pos[1] << std::endl;
     std::cout << std::endl;
 }
 
@@ -286,9 +325,10 @@ void SceneProjectiles::paint(const Camera& camera) {
 
     // draw the different spheres
     vaoSphere->bind();
-    const Particle* particles[3] = { systemAnalytic.getParticle(0),
+    const Particle* particles[4] = { systemAnalytic.getParticle(0),
                                      systemNumerical1.getParticle(0),
-                                     systemNumerical2.getParticle(0) };
+                                     systemNumerical2.getParticle(0),
+                                     systemNumerical3.getParticle(0)};
     for (const Particle* particle : particles) {
         Vec3   p = particle->pos;
         Vec3   c = particle->color;
@@ -340,6 +380,14 @@ void SceneProjectiles::paint(const Camera& camera) {
         shaderLines->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
         vaoTrajectory->bind();
         glFuncs->glDrawArrays(GL_LINE_STRIP, 0, std::min(static_cast<unsigned int>(trajectoryNumerical2.size()),
+                                                         MAX_TRAJ_POINTS));
+        vaoTrajectory->release();
+
+        updateTrajectoryCoordsBuffer(trajectoryNumerical3, widget->renderSameZ());
+        c = systemNumerical3.getParticle(0)->color;
+        shaderLines->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
+        vaoTrajectory->bind();
+        glFuncs->glDrawArrays(GL_LINE_STRIP, 0, std::min(static_cast<unsigned int>(trajectoryNumerical3.size()),
                                                          MAX_TRAJ_POINTS));
         vaoTrajectory->release();
 

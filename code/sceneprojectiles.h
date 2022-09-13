@@ -52,13 +52,16 @@ protected:
     ParticleSystem systemAnalytic;
     ParticleSystem systemNumerical1;
     ParticleSystem systemNumerical2;
+    ParticleSystem systemNumerical3;
     ForceConstAcceleration *fGravity1 = nullptr;
     ForceConstAcceleration *fGravity2 = nullptr;
-    bool system1active, system2active;
+    ForceConstAcceleration *fGravity3 = nullptr;
+    bool system1active, system2active, system3active;
 
     std::list<Vec3> trajectoryAnalytic;
     std::list<Vec3> trajectoryNumerical1;
     std::list<Vec3> trajectoryNumerical2;
+    std::list<Vec3> trajectoryNumerical3;
 
     double time = 0;
     double gravityAccel;
