@@ -19,7 +19,10 @@ SceneFountain::~SceneFountain() {
 }
 
 
-void SceneFountain::initialize(double dt) {
+void SceneFountain::initialize(double dt, unsigned int dragt) {
+    timeStep = dt;
+    dragType = dragt;
+
     // load shader
     shader = glutils::loadShaderProgram(":/shaders/phong.vert", ":/shaders/phong.frag");
 
@@ -42,12 +45,14 @@ void SceneFountain::initialize(double dt) {
     // scene
     fountainPos = Vec3(0, 80, 0);
     colliderFloor.setPlane(Vec3(0, 1, 0), 0);
-    timeStep = dt;
 }
 
 
-void SceneFountain::reset(double dt)
+void SceneFountain::reset(double dt, unsigned int dragt)
 {
+    timeStep = dt;
+    dragType = dragt;
+
     // update values from UI
     updateSimParams();
 
@@ -58,8 +63,6 @@ void SceneFountain::reset(double dt)
     fGravity->clearInfluencedParticles();
     system.deleteParticles();
     deadParticles.clear();
-
-    timeStep = dt;
 }
 
 

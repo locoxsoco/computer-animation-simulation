@@ -104,7 +104,7 @@ void GLWidget::setScene(Scene* sc)
     scene = sc;
 
     this->makeCurrent();
-    scene->initialize(timeStep);
+    scene->initialize(timeStep, dragType);
 
     Vec3 bmin, bmax;
     scene->getSceneBounds(bmin, bmax);
@@ -221,7 +221,7 @@ void GLWidget::pauseSim()
 void GLWidget::resetSim()
 {
     this->makeCurrent();
-    if (scene) scene->reset(timeStep);
+    if (scene) scene->reset(timeStep, dragType);
     simSteps = 0;
     simTime = 0;
     simPerf = 0;

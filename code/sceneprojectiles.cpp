@@ -39,7 +39,10 @@ SceneProjectiles::~SceneProjectiles() {
     systemNumerical3.deleteForces();
 }
 
-void SceneProjectiles::initialize(double dt) {
+void SceneProjectiles::initialize(double dt, unsigned int dragt) {
+
+    timeStep = dt;
+    dragType = dragt;
 
     /*
      * RENDER INITS
@@ -122,8 +125,6 @@ void SceneProjectiles::initialize(double dt) {
     fWind3 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
     fWind3->addInfluencedParticle(systemNumerical3.getParticle(0));
     systemNumerical3.addForce(fWind3);
-
-    timeStep = dt;
 }
 
 
@@ -138,9 +139,10 @@ Integrator* createIntegrator(int type) {
 }
 
 
-void SceneProjectiles::reset(double dt) {
+void SceneProjectiles::reset(double dt, unsigned int dragt) {
 
     timeStep = dt;
+    dragType = dragt;
 
     // get new interface values
     shotHeight   = widget->getHeight();

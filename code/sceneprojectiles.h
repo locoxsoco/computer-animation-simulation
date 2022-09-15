@@ -17,8 +17,8 @@ public:
     SceneProjectiles();
     virtual ~SceneProjectiles();
 
-    virtual void initialize(double timeStep);
-    virtual void reset(double timeStep);
+    virtual void initialize(double timeStep, unsigned int dragt);
+    virtual void reset(double timeStep, unsigned int dragt);
     virtual void update();
     virtual void paint(const Camera& cam);
 

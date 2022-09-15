@@ -72,7 +72,7 @@ protected:
     // Performance timer
     QElapsedTimer timer;
 
-    unsigned int dragType;
+    unsigned int dragType = 1;
 };
 
 
