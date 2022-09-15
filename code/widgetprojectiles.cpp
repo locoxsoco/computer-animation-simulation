@@ -29,6 +29,18 @@ double WidgetProjectiles::getSpeed() const {
     return ui->speed->value();
 }
 
+double WidgetProjectiles::getWindX() const {
+    return ui->windX->value();
+}
+
+double WidgetProjectiles::getWindY() const {
+    return ui->windY->value();
+}
+
+double WidgetProjectiles::getWindZ() const {
+    return ui->windZ->value();
+}
+
 int WidgetProjectiles::getSolver1() const {
     return ui->solver1->currentIndex();
 }
@@ -71,4 +83,3 @@ void WidgetProjectiles::setSolver2(int idx) {
 void WidgetProjectiles::setSolver3(int idx) {
     ui->solver3->setCurrentIndex(idx);
 }
-

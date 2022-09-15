@@ -17,16 +17,16 @@ public:
     SceneProjectiles();
     virtual ~SceneProjectiles();
 
-    virtual void initialize();
-    virtual void reset();
-    virtual void update(double dt);
+    virtual void initialize(double timeStep);
+    virtual void reset(double timeStep);
+    virtual void update();
     virtual void paint(const Camera& cam);
 
     virtual void getSceneBounds(Vec3& bmin, Vec3& bmax) {
         bmin = Vec3(-10,  -10, -30);
         bmax = Vec3( 200, 150,  30);
     }
-    virtual unsigned int getNumParticles() { return 3; }
+    virtual unsigned int getNumParticles() { return 4; }
 
     virtual QWidget* sceneUI() { return widget; }
 
@@ -56,6 +56,9 @@ protected:
     ForceConstAcceleration *fGravity1 = nullptr;
     ForceConstAcceleration *fGravity2 = nullptr;
     ForceConstAcceleration *fGravity3 = nullptr;
+    ForceConstAcceleration *fWind1 = nullptr;
+    ForceConstAcceleration *fWind2 = nullptr;
+    ForceConstAcceleration *fWind3 = nullptr;
     bool system1active, system2active, system3active;
 
     std::list<Vec3> trajectoryAnalytic;
@@ -64,7 +67,7 @@ protected:
     std::list<Vec3> trajectoryNumerical3;
 
     double time = 0;
-    double gravityAccel;
+    double gravityAccel, windX, windY, windZ;
     double shotHeight, shotAngle, shotSpeed;
 };
 #endif // SCENEPROJECTILES_H

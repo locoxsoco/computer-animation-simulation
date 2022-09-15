@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>262</width>
-    <height>453</height>
+    <width>267</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -132,7 +132,46 @@
    <item row="5" column="1">
     <widget class="QComboBox" name="solver2">
      <property name="currentText">
-      <string>Sympletic Euler</string>
+      <string>Euler</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>Euler</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sympletic Euler</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Midpoint</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Verlet</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#00007f;&quot;&gt;Solver 3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QComboBox" name="solver3">
+     <property name="currentText">
+      <string>Euler</string>
      </property>
      <item>
       <property name="text">
@@ -157,56 +196,126 @@
     </widget>
    </item>
    <item row="7" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>120</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Wind</string>
+     </property>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>X-axis</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y-axis</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Z-axis</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="windX">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>30</y>
+        <width>67</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-10.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>10.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="windY">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>60</y>
+        <width>67</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-10.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>10.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="windZ">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>90</y>
+        <width>67</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-10.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>10.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="2">
     <widget class="QCheckBox" name="trajectory">
      <property name="text">
       <string>Show trajectory</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="10" column="0" colspan="2">
     <widget class="QCheckBox" name="sameZ">
      <property name="text">
       <string>Same Z coordinate</string>
      </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_7">
-     <property name="font">
-      <font>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#00007f;&quot;&gt;Solver 3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QComboBox" name="solver3">
-     <property name="currentText">
-      <string>Midpoint</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>Euler</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Sympletic Euler</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Midpoint</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Verlet</string>
-      </property>
-     </item>
     </widget>
    </item>
   </layout>

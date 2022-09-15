@@ -19,7 +19,7 @@ SceneFountain::~SceneFountain() {
 }
 
 
-void SceneFountain::initialize() {
+void SceneFountain::initialize(double dt) {
     // load shader
     shader = glutils::loadShaderProgram(":/shaders/phong.vert", ":/shaders/phong.frag");
 
@@ -42,10 +42,11 @@ void SceneFountain::initialize() {
     // scene
     fountainPos = Vec3(0, 80, 0);
     colliderFloor.setPlane(Vec3(0, 1, 0), 0);
+    timeStep = dt;
 }
 
 
-void SceneFountain::reset()
+void SceneFountain::reset(double dt)
 {
     // update values from UI
     updateSimParams();
@@ -57,6 +58,8 @@ void SceneFountain::reset()
     fGravity->clearInfluencedParticles();
     system.deleteParticles();
     deadParticles.clear();
+
+    timeStep = dt;
 }
 
 
@@ -132,7 +135,8 @@ void SceneFountain::paint(const Camera& camera) {
 }
 
 
-void SceneFountain::update(double dt) {
+void SceneFountain::update() {
+    double dt = timeStep;
 
     // emit new particles, reuse dead ones if possible
     int emitParticles = std::max(1, int(std::round(emitRate * dt)));

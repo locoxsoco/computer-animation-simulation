@@ -30,7 +30,10 @@ public slots:
     void doSimLoop();
     void pauseSim();
     void resetSim();
-    void setTimeStep(double t) { timeStep = t; }
+    void setTimeStep(double t) { if(scene) scene->timeStep = t; }
+    void setNoDrag() { dragType = 1; };
+    void setLinearDrag() { dragType = 2; };
+    void setQuadraticDrag() { dragType = 3; };
 
     void resetCamera();
     void cameraViewX();
@@ -51,7 +54,7 @@ protected:
 
     // Simulation
     bool runningSim = false;
-    double timeStep = 0.1;
+    double timeStep = 0.05;
     int    simSteps = 0;
     double simTime = 0;
     double simPerf = 0;
@@ -68,6 +71,8 @@ protected:
 
     // Performance timer
     QElapsedTimer timer;
+
+    unsigned int dragType;
 };
 
 

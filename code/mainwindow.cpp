@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnPause,   SIGNAL(clicked()), ui->openGLWidget, SLOT(pauseSim()));
     connect(ui->btnReset,   SIGNAL(clicked()), ui->openGLWidget, SLOT(resetSim()));
     connect(ui->timestep,   SIGNAL(valueChanged(double)), ui->openGLWidget, SLOT(setTimeStep(double)));
+    connect(ui->radio_no_drag,   SIGNAL(clicked()), ui->openGLWidget, SLOT(setNoDrag()));
+    connect(ui->radio_linear_drag,   SIGNAL(clicked()), ui->openGLWidget, SLOT(setLinearDrag()));
+    connect(ui->radio_quadratic_drag,   SIGNAL(clicked()), ui->openGLWidget, SLOT(setQuadraticDrag()));
     ui->openGLWidget->setTimeStep(ui->timestep->value());
 
     connect(ui->actionCameraReset, SIGNAL(triggered()), ui->openGLWidget, SLOT(resetCamera()));

@@ -19,6 +19,9 @@ public:
     double getHeight() const;
     double getAngle() const;
     double getSpeed() const;
+    double getWindX() const;
+    double getWindY() const;
+    double getWindZ() const;
     int getSolver1() const;
     int getSolver2() const;
     int getSolver3() const;

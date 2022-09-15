@@ -12,9 +12,9 @@ public:
     Scene() {}
     virtual ~Scene() {};
 
-    virtual void initialize() = 0;
-    virtual void reset() = 0;
-    virtual void update(double dt) = 0;
+    virtual void initialize(double timeStep) = 0;
+    virtual void reset(double timeStep) = 0;
+    virtual void update() = 0;
     virtual void paint(const Camera& cam) = 0;
 
     virtual void mousePressed (const QMouseEvent*, const Camera&) {};
@@ -26,6 +26,8 @@ public:
     virtual unsigned int getNumParticles() { return 0; }
 
     virtual QWidget* sceneUI() = 0;
+
+    double timeStep;
 };
 
 #endif // SCENE_H

@@ -37,7 +37,8 @@ void IntegratorMidpoint::step(ParticleSystem &system, double dt) {
 
 void IntegratorVerlet::step(ParticleSystem &system, double dt) {
     // TODO
-    float k = 0.99;
+    float k = 1.f;
+    //float k = 0.99;
     Vecd p0 = system.getPositions();
     Vecd pp1 = system.getPreviousPositions();
     Vecd p1 = p0 + k*(p0 - pp1) + dt*dt*system.getAccelerations();

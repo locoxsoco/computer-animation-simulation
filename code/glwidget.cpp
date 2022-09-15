@@ -10,6 +10,7 @@ GLWidget::GLWidget(QWidget* parent) : QOpenGLWidget(parent)
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     scene = nullptr;
+    dragType = 1;
 }
 
 GLWidget::~GLWidget()
@@ -103,7 +104,7 @@ void GLWidget::setScene(Scene* sc)
     scene = sc;
 
     this->makeCurrent();
-    scene->initialize();
+    scene->initialize(timeStep);
 
     Vec3 bmin, bmax;
     scene->getSceneBounds(bmin, bmax);
@@ -119,12 +120,12 @@ void GLWidget::setScene(Scene* sc)
 void GLWidget::simStep() {
     timer.start();
 
-    scene->update(timeStep);
+    scene->update();
 
     double tsim = 1e-6 * double(timer.nsecsElapsed());
     simMs += tsim;
     simSteps++;
-    simTime += timeStep;
+    simTime += scene->timeStep;
     simPerf = tsim;
 }
 
@@ -220,7 +221,7 @@ void GLWidget::pauseSim()
 void GLWidget::resetSim()
 {
     this->makeCurrent();
-    if (scene) scene->reset();
+    if (scene) scene->reset(timeStep);
     simSteps = 0;
     simTime = 0;
     simPerf = 0;

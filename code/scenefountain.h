@@ -18,9 +18,9 @@ public:
     SceneFountain();
     virtual ~SceneFountain();
 
-    virtual void initialize();
-    virtual void reset();
-    virtual void update(double dt);
+    virtual void initialize(double timeStep);
+    virtual void reset(double timeStep);
+    virtual void update();
     virtual void paint(const Camera& cam);
 
     virtual void mousePressed(const QMouseEvent* e, const Camera& cam);

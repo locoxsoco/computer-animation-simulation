@@ -26,6 +26,14 @@ public:
         mass    = 1.0;
     }
 
+    Particle(const Vec3& p, const Vec3& v, float m, double timeStep) {
+        pos		= p;
+        vel		= v;
+        force	= Vec3(0.0, 0.0, 0.0);
+        prevPos = pos - timeStep*vel;
+        mass	= m;
+    }
+
     Particle(const Vec3& p, const Vec3& v, float m) {
         pos		= p;
         vel		= v;

@@ -39,7 +39,7 @@ SceneProjectiles::~SceneProjectiles() {
     systemNumerical3.deleteForces();
 }
 
-void SceneProjectiles::initialize() {
+void SceneProjectiles::initialize(double dt) {
 
     /*
      * RENDER INITS
@@ -84,16 +84,16 @@ void SceneProjectiles::initialize() {
      */
 
     // create the different systems, with one particle each
-    systemAnalytic.addParticle(new Particle(Vec3( 0, 0, -15), Vec3(0,0,0), 1));
+    systemAnalytic.addParticle(new Particle(Vec3( 0, 0, -15), Vec3(0,0,0), 1, timeStep));
     systemAnalytic.getParticle(0)->color = Vec3(1.0, 1.0, 1.0);
     systemAnalytic.getParticle(0)->radius = 2;
-    systemNumerical1.addParticle(new Particle(Vec3( 0, 0, -5), Vec3(0,0,0), 1));
+    systemNumerical1.addParticle(new Particle(Vec3( 0, 0, -5), Vec3(0,0,0), 1, timeStep));
     systemNumerical1.getParticle(0)->color = Vec3(0.5, 0, 0);
     systemNumerical1.getParticle(0)->radius = 2;
-    systemNumerical2.addParticle(new Particle(Vec3( 0, 0, 5), Vec3(0,0,0), 1));
+    systemNumerical2.addParticle(new Particle(Vec3( 0, 0, 5), Vec3(0,0,0), 1, timeStep));
     systemNumerical2.getParticle(0)->color = Vec3(0, 0.5, 0);
     systemNumerical2.getParticle(0)->radius = 2;
-    systemNumerical3.addParticle(new Particle(Vec3( 0, 0, 15), Vec3(0,0,0), 1));
+    systemNumerical3.addParticle(new Particle(Vec3( 0, 0, 15), Vec3(0,0,0), 1, timeStep));
     systemNumerical3.getParticle(0)->color = Vec3(0, 0, 0.5);
     systemNumerical3.getParticle(0)->radius = 2;
 
@@ -110,6 +110,20 @@ void SceneProjectiles::initialize() {
     fGravity3->addInfluencedParticle(systemNumerical3.getParticle(0));
     systemNumerical3.addForce(fGravity3);
 
+    // Adding wind force
+    fWind1 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
+    fWind1->addInfluencedParticle(systemNumerical1.getParticle(0));
+    systemNumerical1.addForce(fWind1);
+
+    fWind2 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
+    fWind2->addInfluencedParticle(systemNumerical2.getParticle(0));
+    systemNumerical2.addForce(fWind2);
+
+    fWind3 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
+    fWind3->addInfluencedParticle(systemNumerical3.getParticle(0));
+    systemNumerical3.addForce(fWind3);
+
+    timeStep = dt;
 }
 
 
@@ -124,13 +138,18 @@ Integrator* createIntegrator(int type) {
 }
 
 
-void SceneProjectiles::reset() {
+void SceneProjectiles::reset(double dt) {
+
+    timeStep = dt;
 
     // get new interface values
     shotHeight   = widget->getHeight();
     shotAngle    = Math::toRad(widget->getAngle());
     shotSpeed    = widget->getSpeed();
     gravityAccel = widget->getGravity();
+    windX        = widget->getWindX();
+    windY        = widget->getWindY();
+    windZ        = widget->getWindZ();
 
     // integrators
     if (integrator1) delete integrator1;
@@ -144,17 +163,26 @@ void SceneProjectiles::reset() {
     const double zdist = 15;
     systemAnalytic.getParticle(0)->pos = Vec3(0, shotHeight, -zdist);
     systemAnalytic.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
+    systemAnalytic.getParticle(0)->prevPos = systemAnalytic.getParticle(0)->pos - timeStep*systemAnalytic.getParticle(0)->vel;
     systemNumerical1.getParticle(0)->pos = Vec3(0, shotHeight, -zdist/3);
     systemNumerical1.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
+    systemNumerical1.getParticle(0)->prevPos = systemNumerical1.getParticle(0)->pos - timeStep*systemNumerical1.getParticle(0)->vel;;
     systemNumerical2.getParticle(0)->pos = Vec3(0, shotHeight, zdist/3);
     systemNumerical2.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
+    systemNumerical2.getParticle(0)->prevPos = systemNumerical2.getParticle(0)->pos - timeStep*systemNumerical2.getParticle(0)->vel;
     systemNumerical3.getParticle(0)->pos = Vec3(0, shotHeight, zdist);
     systemNumerical3.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
+    systemNumerical3.getParticle(0)->prevPos = systemNumerical3.getParticle(0)->pos - timeStep*systemNumerical3.getParticle(0)->vel;
 
     // update gravity accelerations
     fGravity1->setAcceleration(Vec3(0, -gravityAccel, 0));
     fGravity2->setAcceleration(Vec3(0, -gravityAccel, 0));
     fGravity3->setAcceleration(Vec3(0, -gravityAccel, 0));
+
+    // update wind accelerations
+    fWind1->setAcceleration(Vec3(windX, windY, windZ));
+    fWind2->setAcceleration(Vec3(windX, windY, windZ));
+    fWind3->setAcceleration(Vec3(windX, windY, windZ));
 
     // update system forces
     systemNumerical1.updateForces();
@@ -181,7 +209,8 @@ void SceneProjectiles::reset() {
 }
 
 
-void SceneProjectiles::update(double dt) {
+void SceneProjectiles::update() {
+    double dt = timeStep;
 
     // total ellapsed time (needed for analytic solution)
     time += dt;

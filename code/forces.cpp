@@ -3,6 +3,6 @@
 void ForceConstAcceleration::apply() {
     for (Particle* p : particles) {
         // TODO
-        p->force = getAcceleration();
+        p->force += getAcceleration();
     }
 }
