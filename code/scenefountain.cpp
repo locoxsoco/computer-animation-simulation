@@ -43,7 +43,7 @@ void SceneFountain::initialize(double dt, unsigned int dragt) {
     system.addForce(fGravity);
 
     // scene
-    fountainPos = Vec3(0, 80, 0);
+    fountainPos = Vec3(0, 10, 0);
     colliderFloor.setPlane(Vec3(0, 1, 0), 0);
 }
 
@@ -163,11 +163,11 @@ void SceneFountain::update() {
         p->radius = 1.0;
         p->life = maxParticleLife;
 
-        double x = Random::get(-10.0, 10.0);
+        double x = Random::get(-2, 2);
         double y = 0;
-        double z = Random::get(-10.0, 10.0);
-        p->pos = Vec3(x, y, z) + fountainPos;
-        p->vel = Vec3(0,0,0);
+        double z = Random::get(-2, 2);
+        p->pos = Vec3(0,y,0) + fountainPos;
+        p->vel = Vec3(x,30,z);
     }
 
     // integration step

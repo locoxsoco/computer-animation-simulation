@@ -312,7 +312,6 @@ void SceneProjectiles::update() {
 
     // NUMERICAL INTEGRATORS:
 
-    int system1bounce = 0;
     if (system1active) {
         // integration step
         integrator1->step(systemNumerical1, dt);
@@ -320,20 +319,15 @@ void SceneProjectiles::update() {
         // collision test
         Particle* p = systemNumerical1.getParticle(0);
         if (p->pos.y() < 0) {
-            std::cout << std::endl << std::endl << std::endl << std::endl << std::endl;
             // resolve
             // TODO
-            p->pos.y() = -p->pos.y();
-            p->force.y() = -p->force.y();
-            p->vel.y() = -p->vel.y()*0.4;
-            p->vel.x() = p->vel.x()*0.3;
-            p->vel.z() = p->vel.z()*0.3;
+            p->pos.y() = p->pos.y() - (1+0.5)*p->pos.y();
+            p->vel.y() = p->vel.y() - (1+0.5)*p->vel.y();
+            //p->force.y() = 0;
+            p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
+            p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
             p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
             p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
-
-            if (system1bounce >= 1) system1active = false;
-            else system1bounce++;
-
 
             // stop sim for this system
             //system1active = false;
@@ -346,7 +340,6 @@ void SceneProjectiles::update() {
         }
     }
 
-    int system2bounce = 0;
     if (system2active) {
         // integration step
         integrator2->step(systemNumerical2, dt);
@@ -356,19 +349,13 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
-            p->pos.y() = -p->pos.y();
-            p->force.y() = -p->force.y();
-            p->vel.y() = -p->vel.y()*0.4;
-            p->vel.x() = p->vel.x()*0.3;
-            p->vel.z() = p->vel.z()*0.3;
+            p->pos.y() = p->pos.y() - (1+0.5)*p->pos.y();
+            p->vel.y() = p->vel.y() - (1+0.5)*p->vel.y();
+            //p->force.y() = 0;
+            p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
+            p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
             p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
             p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
-
-            if (p->pos.x() < 0.1 && p->pos.x() > -0.1) system1active = false;
-
-            if (system2bounce >= 1 ) system2active = false;
-            else system2bounce++;
-
 
             // stop sim for this system
             //system2active = false;
@@ -381,7 +368,6 @@ void SceneProjectiles::update() {
         }
     }
 
-    int system3bounce = 0;
     if (system3active) {
         // integration step
         integrator3->step(systemNumerical3, dt);
@@ -391,18 +377,13 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
-            p->pos.y() = -p->pos.y();
-            p->force.y() = -p->force.y();
-            p->vel.y() = -p->vel.y()*0.4;
-            p->vel.x() = p->vel.x()*0.3;
-            p->vel.z() = p->vel.z()*0.3;
+            p->pos.y() = p->pos.y() - (1+0.5)*p->pos.y();
+            p->vel.y() = p->vel.y() - (1+0.5)*p->vel.y();
+            //p->force.y() = 0;
+            p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
+            p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
             p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
             p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
-
-            if (p->pos.x() < 0.1 && p->pos.x() > -0.1) system1active = false;
-
-            if (system3bounce >= 1 ) system3active = false;
-            else system3bounce++;
 
             // stop sim for this system
             //system3active = false;
