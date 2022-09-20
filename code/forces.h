@@ -11,6 +11,7 @@ public:
     virtual ~Force(void) {}
 
     virtual void apply() = 0;
+    virtual void setAcceleration(const Vec3& a) = 0;
 
     void addInfluencedParticle(Particle* p) {
         particles.push_back(p);
@@ -39,6 +40,39 @@ public:
     ForceConstAcceleration() { acceleration = Vec3(0,0,0); }
     ForceConstAcceleration(const Vec3& a) { acceleration = a; }
     virtual ~ForceConstAcceleration() {}
+
+    virtual void apply();
+
+    void setAcceleration(const Vec3& a) { acceleration = a; }
+    Vec3 getAcceleration() const { return acceleration; }
+
+protected:
+    Vec3 acceleration;
+};
+
+
+class ForceDragLinear : public Force
+{
+public:
+    ForceDragLinear() { acceleration = Vec3(0,0,0); }
+    ForceDragLinear(const Vec3& a) { acceleration = a; }
+    virtual ~ForceDragLinear() {}
+
+    virtual void apply();
+
+    void setAcceleration(const Vec3& a) { acceleration = a; }
+    Vec3 getAcceleration() const { return acceleration; }
+
+protected:
+    Vec3 acceleration;
+};
+
+class ForceDragQuadratic : public Force
+{
+public:
+    ForceDragQuadratic() { acceleration = Vec3(0,0,0); }
+    ForceDragQuadratic(const Vec3& a) { acceleration = a; }
+    virtual ~ForceDragQuadratic() {}
 
     virtual void apply();
 

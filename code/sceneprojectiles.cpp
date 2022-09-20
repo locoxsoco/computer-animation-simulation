@@ -125,6 +125,34 @@ void SceneProjectiles::initialize(double dt, unsigned int dragt) {
     fWind3 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
     fWind3->addInfluencedParticle(systemNumerical3.getParticle(0));
     systemNumerical3.addForce(fWind3);
+
+    // Adding drag force
+    if(dragType == 1) {
+        fDragLinear1 = new ForceDragLinear(-0.000015 * systemNumerical1.getParticle(0)->vel);
+        fDragLinear1->addInfluencedParticle(systemNumerical1.getParticle(0));
+        systemNumerical1.addForce(fDragLinear1);
+
+        fDragLinear2 = new ForceDragLinear(-0.000015 * systemNumerical2.getParticle(0)->vel);
+        fDragLinear2->addInfluencedParticle(systemNumerical2.getParticle(0));
+        systemNumerical2.addForce(fDragLinear2);
+
+        fDragLinear3 = new ForceDragLinear(-0.000015 * systemNumerical3.getParticle(0)->vel);
+        fDragLinear3->addInfluencedParticle(systemNumerical3.getParticle(0));
+        systemNumerical3.addForce(fDragLinear3);
+    }
+    else if (dragType == 2) {
+        fDragQuadratic1 = new ForceDragQuadratic(-0.000015 * systemNumerical1.getParticle(0)->vel.norm() * systemNumerical1.getParticle(0)->vel);
+        fDragQuadratic1->addInfluencedParticle(systemNumerical1.getParticle(0));
+        systemNumerical1.addForce(fDragQuadratic1);
+
+        fDragQuadratic2 = new ForceDragQuadratic(-0.000015 * systemNumerical2.getParticle(0)->vel.norm() * systemNumerical2.getParticle(0)->vel);
+        fDragQuadratic2->addInfluencedParticle(systemNumerical2.getParticle(0));
+        systemNumerical2.addForce(fDragQuadratic2);
+
+        fDragQuadratic3 = new ForceDragQuadratic(-0.000015 * systemNumerical3.getParticle(0)->vel.norm() * systemNumerical3.getParticle(0)->vel);
+        fDragQuadratic3->addInfluencedParticle(systemNumerical3.getParticle(0));
+        systemNumerical3.addForce(fDragQuadratic3);
+    }
 }
 
 
@@ -176,15 +204,64 @@ void SceneProjectiles::reset(double dt, unsigned int dragt) {
     systemNumerical3.getParticle(0)->vel = shotSpeed*Vec3(std::cos(shotAngle), std::sin(shotAngle), 0);
     systemNumerical3.getParticle(0)->prevPos = systemNumerical3.getParticle(0)->pos - timeStep*systemNumerical3.getParticle(0)->vel;
 
+    //Clear forces
+    systemNumerical1.clearForces();
+    systemNumerical2.clearForces();
+    systemNumerical3.clearForces();
+
     // update gravity accelerations
-    fGravity1->setAcceleration(Vec3(0, -gravityAccel, 0));
-    fGravity2->setAcceleration(Vec3(0, -gravityAccel, 0));
-    fGravity3->setAcceleration(Vec3(0, -gravityAccel, 0));
+    fGravity1 = new ForceConstAcceleration(Vec3(0, -gravityAccel, 0));
+    fGravity1->addInfluencedParticle(systemNumerical1.getParticle(0));
+    systemNumerical1.addForce(fGravity1);
+
+    fGravity2 = new ForceConstAcceleration(Vec3(0, -gravityAccel, 0));
+    fGravity2->addInfluencedParticle(systemNumerical2.getParticle(0));
+    systemNumerical2.addForce(fGravity2);
+
+    fGravity3 = new ForceConstAcceleration(Vec3(0, -gravityAccel, 0));
+    fGravity3->addInfluencedParticle(systemNumerical3.getParticle(0));
+    systemNumerical3.addForce(fGravity3);
 
     // update wind accelerations
-    fWind1->setAcceleration(Vec3(windX, windY, windZ));
-    fWind2->setAcceleration(Vec3(windX, windY, windZ));
-    fWind3->setAcceleration(Vec3(windX, windY, windZ));
+    fWind1 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
+    fWind1->addInfluencedParticle(systemNumerical1.getParticle(0));
+    systemNumerical1.addForce(fWind1);
+
+    fWind2 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
+    fWind2->addInfluencedParticle(systemNumerical2.getParticle(0));
+    systemNumerical2.addForce(fWind2);
+
+    fWind3 = new ForceConstAcceleration(Vec3(windX, windY, windZ));
+    fWind3->addInfluencedParticle(systemNumerical3.getParticle(0));
+    systemNumerical3.addForce(fWind3);
+
+    // Adding drag force
+    if(dragType == 1) {
+        fDragLinear1 = new ForceDragLinear(-0.000015 * systemNumerical1.getParticle(0)->vel);
+        fDragLinear1->addInfluencedParticle(systemNumerical1.getParticle(0));
+        systemNumerical1.addForce(fDragLinear1);
+
+        fDragLinear2 = new ForceDragLinear(-0.000015 * systemNumerical2.getParticle(0)->vel);
+        fDragLinear2->addInfluencedParticle(systemNumerical2.getParticle(0));
+        systemNumerical2.addForce(fDragLinear2);
+
+        fDragLinear3 = new ForceDragLinear(-0.000015 * systemNumerical3.getParticle(0)->vel);
+        fDragLinear3->addInfluencedParticle(systemNumerical3.getParticle(0));
+        systemNumerical3.addForce(fDragLinear3);
+    }
+    else if (dragType == 2) {
+        fDragQuadratic1 = new ForceDragQuadratic(-0.000015 * systemNumerical1.getParticle(0)->vel.norm() * systemNumerical1.getParticle(0)->vel);
+        fDragQuadratic1->addInfluencedParticle(systemNumerical1.getParticle(0));
+        systemNumerical1.addForce(fDragQuadratic1);
+
+        fDragQuadratic2 = new ForceDragQuadratic(-0.000015 * systemNumerical2.getParticle(0)->vel.norm() * systemNumerical2.getParticle(0)->vel);
+        fDragQuadratic2->addInfluencedParticle(systemNumerical2.getParticle(0));
+        systemNumerical2.addForce(fDragQuadratic2);
+
+        fDragQuadratic3 = new ForceDragQuadratic(-0.000015 * systemNumerical3.getParticle(0)->vel.norm() * systemNumerical3.getParticle(0)->vel);
+        fDragQuadratic3->addInfluencedParticle(systemNumerical3.getParticle(0));
+        systemNumerical3.addForce(fDragQuadratic3);
+    }
 
     // update system forces
     systemNumerical1.updateForces();
@@ -235,6 +312,7 @@ void SceneProjectiles::update() {
 
     // NUMERICAL INTEGRATORS:
 
+    int system1bounce = 0;
     if (system1active) {
         // integration step
         integrator1->step(systemNumerical1, dt);
@@ -242,11 +320,23 @@ void SceneProjectiles::update() {
         // collision test
         Particle* p = systemNumerical1.getParticle(0);
         if (p->pos.y() < 0) {
+            std::cout << std::endl << std::endl << std::endl << std::endl << std::endl;
             // resolve
             // TODO
+            p->pos.y() = -p->pos.y();
+            p->force.y() = -p->force.y();
+            p->vel.y() = -p->vel.y()*0.4;
+            p->vel.x() = p->vel.x()*0.3;
+            p->vel.z() = p->vel.z()*0.3;
+            p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
+            p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
+
+            if (system1bounce >= 1) system1active = false;
+            else system1bounce++;
+
 
             // stop sim for this system
-            system1active = false;
+            //system1active = false;
         }
 
         // record trajectory
@@ -256,6 +346,7 @@ void SceneProjectiles::update() {
         }
     }
 
+    int system2bounce = 0;
     if (system2active) {
         // integration step
         integrator2->step(systemNumerical2, dt);
@@ -265,9 +356,22 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
+            p->pos.y() = -p->pos.y();
+            p->force.y() = -p->force.y();
+            p->vel.y() = -p->vel.y()*0.4;
+            p->vel.x() = p->vel.x()*0.3;
+            p->vel.z() = p->vel.z()*0.3;
+            p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
+            p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
+
+            if (p->pos.x() < 0.1 && p->pos.x() > -0.1) system1active = false;
+
+            if (system2bounce >= 1 ) system2active = false;
+            else system2bounce++;
+
 
             // stop sim for this system
-            system2active = false;
+            //system2active = false;
         }
 
         // record trajectory
@@ -277,6 +381,7 @@ void SceneProjectiles::update() {
         }
     }
 
+    int system3bounce = 0;
     if (system3active) {
         // integration step
         integrator3->step(systemNumerical3, dt);
@@ -286,9 +391,21 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
+            p->pos.y() = -p->pos.y();
+            p->force.y() = -p->force.y();
+            p->vel.y() = -p->vel.y()*0.4;
+            p->vel.x() = p->vel.x()*0.3;
+            p->vel.z() = p->vel.z()*0.3;
+            p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
+            p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
+
+            if (p->pos.x() < 0.1 && p->pos.x() > -0.1) system1active = false;
+
+            if (system3bounce >= 1 ) system3active = false;
+            else system3bounce++;
 
             // stop sim for this system
-            system3active = false;
+            //system3active = false;
         }
 
         // record trajectory

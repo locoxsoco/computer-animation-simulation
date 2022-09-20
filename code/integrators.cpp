@@ -45,5 +45,6 @@ void IntegratorVerlet::step(ParticleSystem &system, double dt) {
 
     system.setPositions(p1);
     system.setPreviousPositions(p0);
+    system.setVelocities((p1-p0)/dt);
     system.updateForces();
 }

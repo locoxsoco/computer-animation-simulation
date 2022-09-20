@@ -31,9 +31,9 @@ public slots:
     void pauseSim();
     void resetSim();
     void setTimeStep(double t) { if(scene) scene->timeStep = t; }
-    void setNoDrag() { dragType = 1; };
-    void setLinearDrag() { dragType = 2; };
-    void setQuadraticDrag() { dragType = 3; };
+    void setNoDrag() { dragType = 0; };
+    void setLinearDrag() { dragType = 1; };
+    void setQuadraticDrag() { dragType = 2; };
 
     void resetCamera();
     void cameraViewX();
@@ -72,7 +72,7 @@ protected:
     // Performance timer
     QElapsedTimer timer;
 
-    unsigned int dragType = 1;
+    unsigned int dragType = 0;
 };
 
 

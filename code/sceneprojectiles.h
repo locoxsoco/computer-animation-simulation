@@ -59,6 +59,12 @@ protected:
     ForceConstAcceleration *fWind1 = nullptr;
     ForceConstAcceleration *fWind2 = nullptr;
     ForceConstAcceleration *fWind3 = nullptr;
+    ForceDragLinear *fDragLinear1 = nullptr;
+    ForceDragLinear *fDragLinear2 = nullptr;
+    ForceDragLinear *fDragLinear3 = nullptr;
+    ForceDragQuadratic *fDragQuadratic1 = nullptr;
+    ForceDragQuadratic *fDragQuadratic2 = nullptr;
+    ForceDragQuadratic *fDragQuadratic3 = nullptr;
     bool system1active, system2active, system3active;
 
     std::list<Vec3> trajectoryAnalytic;
@@ -67,7 +73,7 @@ protected:
     std::list<Vec3> trajectoryNumerical3;
 
     double time = 0;
-    double gravityAccel, windX, windY, windZ;
+    double gravityAccel, windX, windY, windZ, dragX, dragY, dragZ;
     double shotHeight, shotAngle, shotSpeed;
 };
 #endif // SCENEPROJECTILES_H
