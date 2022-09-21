@@ -328,8 +328,8 @@ void SceneProjectiles::update() {
             //p->force.y() = 0;
             p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
             p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
-            p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
-            p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
+            p->prevPos.x() = p->pos.x() - p->vel.x()*dt;
+            p->prevPos.y() = p->pos.y() - p->vel.y()*dt;
 
             // stop sim for this system
             //system1active = false;
@@ -356,8 +356,8 @@ void SceneProjectiles::update() {
             //p->force.y() = 0;
             p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
             p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
-            p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
-            p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
+            p->prevPos.x() = p->pos.x() - p->vel.x()*dt;
+            p->prevPos.y() = p->pos.y() - p->vel.y()*dt;
 
             // stop sim for this system
             //system2active = false;
@@ -384,8 +384,8 @@ void SceneProjectiles::update() {
             //p->force.y() = 0;
             p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
             p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
-            p->prevPos.x() = p->prevPos.x() - p->vel.x()*dt;
-            p->prevPos.y() = p->prevPos.y() - p->vel.y()*dt;
+            p->prevPos.x() = p->pos.x() - p->vel.x()*dt;
+            p->prevPos.y() = p->pos.y() - p->vel.y()*dt;
 
             // stop sim for this system
             //system3active = false;
