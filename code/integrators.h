@@ -32,7 +32,17 @@ public:
 class IntegratorVerlet : public Integrator {
 public:
     virtual void step(ParticleSystem& system, double dt);
-    double kd = 1;
+    double k = 1;
+};
+
+class IntegratorRK2 : public Integrator {
+public:
+    virtual void step(ParticleSystem& system, double dt);
+};
+
+class IntegratorRK4 : public Integrator {
+public:
+    virtual void step(ParticleSystem& system, double dt);
 };
 
 

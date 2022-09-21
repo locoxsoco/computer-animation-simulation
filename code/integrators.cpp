@@ -37,8 +37,6 @@ void IntegratorMidpoint::step(ParticleSystem &system, double dt) {
 
 void IntegratorVerlet::step(ParticleSystem &system, double dt) {
     // TODO
-    float k = 1.f;
-    //float k = 0.99;
     Vecd p0 = system.getPositions();
     Vecd pp1 = system.getPreviousPositions();
     Vecd p1 = p0 + k*(p0 - pp1) + dt*dt*system.getAccelerations();
@@ -47,4 +45,36 @@ void IntegratorVerlet::step(ParticleSystem &system, double dt) {
     system.setPreviousPositions(p0);
     system.setVelocities((p1-p0)/dt);
     system.updateForces();
+}
+
+void IntegratorRK2::step(ParticleSystem &system, double dt) {
+    Vecd x0 = system.getState();
+    Vecd k1 = system.getDerivative();
+
+    Vecd xt = x0 + dt*k1;
+    system.setState(xt);
+    Vecd k2 = system.getDerivative();
+
+    Vecd x1 = x0 + dt/2*(k1+k2);
+    system.setState(x1);
+}
+
+void IntegratorRK4::step(ParticleSystem &system, double dt) {
+    Vecd k1 = system.getDerivative();
+
+    Vecd x0 = system.getState();
+    Vecd xt = x0 + dt/2*k1;
+    system.setState(xt);
+    Vecd k2 = system.getDerivative();
+
+    xt = x0 + dt/2*k2;
+    system.setState(xt);
+    Vecd k3 = system.getDerivative();
+
+    xt = x0 + dt*k3;
+    system.setState(xt);
+    Vecd k4 = system.getDerivative();
+
+    Vecd x1 = x0 + dt/6*(k1 + 2*k2 + 2*k3 + k4);
+    system.setState(x1);
 }
