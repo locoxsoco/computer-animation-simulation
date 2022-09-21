@@ -39,9 +39,11 @@ SceneProjectiles::~SceneProjectiles() {
     systemNumerical3.deleteForces();
 }
 
-void SceneProjectiles::initialize(double dt, unsigned int dragt) {
+void SceneProjectiles::initialize(double dt, double bo, double fr, unsigned int dragt) {
 
     timeStep = dt;
+    bouncing = bo;
+    friction = fr;
     dragType = dragt;
 
     /*
@@ -169,9 +171,11 @@ Integrator* createIntegrator(int type) {
 }
 
 
-void SceneProjectiles::reset(double dt, unsigned int dragt) {
+void SceneProjectiles::reset(double dt, double bo, double fr, unsigned int dragt) {
 
     timeStep = dt;
+    bouncing = bo;
+    friction = fr;
     dragType = dragt;
 
     // get new interface values
@@ -323,11 +327,11 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
-            p->pos.y() = p->pos.y() - (1+0.5)*p->pos.y();
-            p->vel.y() = p->vel.y() - (1+0.5)*p->vel.y();
+            p->pos.y() = p->pos.y() - (1+bouncing)*p->pos.y();
+            p->vel.y() = p->vel.y() - (1+bouncing)*p->vel.y();
             //p->force.y() = 0;
-            p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
-            p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
+            p->vel.x() = p->vel.x() - (friction)*p->vel.x();
+            p->vel.z() = p->vel.z() - (friction)*p->vel.z();
             p->prevPos.x() = p->pos.x() - p->vel.x()*dt;
             p->prevPos.y() = p->pos.y() - p->vel.y()*dt;
 
@@ -351,11 +355,11 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
-            p->pos.y() = p->pos.y() - (1+0.5)*p->pos.y();
-            p->vel.y() = p->vel.y() - (1+0.5)*p->vel.y();
+            p->pos.y() = p->pos.y() - (1+bouncing)*p->pos.y();
+            p->vel.y() = p->vel.y() - (1+bouncing)*p->vel.y();
             //p->force.y() = 0;
-            p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
-            p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
+            p->vel.x() = p->vel.x() - (friction)*p->vel.x();
+            p->vel.z() = p->vel.z() - (friction)*p->vel.z();
             p->prevPos.x() = p->pos.x() - p->vel.x()*dt;
             p->prevPos.y() = p->pos.y() - p->vel.y()*dt;
 
@@ -379,11 +383,11 @@ void SceneProjectiles::update() {
         if (p->pos.y() < 0) {
             // resolve
             // TODO
-            p->pos.y() = p->pos.y() - (1+0.5)*p->pos.y();
-            p->vel.y() = p->vel.y() - (1+0.5)*p->vel.y();
+            p->pos.y() = p->pos.y() - (1+bouncing)*p->pos.y();
+            p->vel.y() = p->vel.y() - (1+bouncing)*p->vel.y();
             //p->force.y() = 0;
-            p->vel.x() = p->vel.x() - (0.7)*p->vel.x();
-            p->vel.z() = p->vel.z() - (0.7)*p->vel.z();
+            p->vel.x() = p->vel.x() - (friction)*p->vel.x();
+            p->vel.z() = p->vel.z() - (friction)*p->vel.z();
             p->prevPos.x() = p->pos.x() - p->vel.x()*dt;
             p->prevPos.y() = p->pos.y() - p->vel.y()*dt;
 

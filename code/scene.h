@@ -12,8 +12,8 @@ public:
     Scene() {}
     virtual ~Scene() {};
 
-    virtual void initialize(double timeStep, unsigned int dragt) = 0;
-    virtual void reset(double timeStep, unsigned int dragt) = 0;
+    virtual void initialize(double dt, double bo, double fr, unsigned int dragt) = 0;
+    virtual void reset(double dt, double bo, double fr, unsigned int dragt) = 0;
     virtual void update() = 0;
     virtual void paint(const Camera& cam) = 0;
 
@@ -27,7 +27,7 @@ public:
 
     virtual QWidget* sceneUI() = 0;
 
-    double timeStep;
+    double timeStep, bouncing, friction;
     unsigned int dragType;
 };
 

@@ -19,8 +19,11 @@ SceneFountain::~SceneFountain() {
 }
 
 
-void SceneFountain::initialize(double dt, unsigned int dragt) {
+void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dragt) {
+
     timeStep = dt;
+    bouncing = bo;
+    friction = fr;
     dragType = dragt;
 
     // load shader
@@ -48,9 +51,11 @@ void SceneFountain::initialize(double dt, unsigned int dragt) {
 }
 
 
-void SceneFountain::reset(double dt, unsigned int dragt)
+void SceneFountain::reset(double dt, double bo, double fr, unsigned int dragt)
 {
     timeStep = dt;
+    bouncing = bo;
+    friction = fr;
     dragType = dragt;
 
     // update values from UI

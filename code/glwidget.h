@@ -30,7 +30,9 @@ public slots:
     void doSimLoop();
     void pauseSim();
     void resetSim();
-    void setTimeStep(double t) { if(scene) scene->timeStep = t; }
+    void setTimeStep(double t) { if(scene) scene->timeStep = t; timeStep = t; }
+    void setBouncing(double b) { if(scene) scene->bouncing = b; bouncing = b; }
+    void setFriction(double f) { if(scene) scene->friction = f; friction = f; }
     void setNoDrag() { dragType = 0; };
     void setLinearDrag() { dragType = 1; };
     void setQuadraticDrag() { dragType = 2; };
@@ -55,6 +57,8 @@ protected:
     // Simulation
     bool runningSim = false;
     double timeStep = 0.05;
+    double bouncing = 0.5;
+    double friction = 0.7;
     int    simSteps = 0;
     double simTime = 0;
     double simPerf = 0;
