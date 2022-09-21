@@ -31,6 +31,7 @@ HEADERS += \
     code/forces.h \
     code/glutils.h \
     code/glwidget.h \
+    code/hash.h \
     code/integrators.h \
     code/mainwindow.h \
     code/model.h \
