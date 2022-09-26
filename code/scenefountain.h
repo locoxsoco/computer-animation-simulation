@@ -9,6 +9,7 @@
 #include "particlesystem.h"
 #include "integrators.h"
 #include "colliders.h"
+#include "hash.h"
 
 class SceneFountain : public Scene
 {
@@ -57,6 +58,8 @@ protected:
 
     Vec3 fountainPos;
     int mouseX, mouseY;
+
+    Hash *hash;
 };
 
 #endif // SCENEFOUNTAIN_H

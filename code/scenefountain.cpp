@@ -48,6 +48,10 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     // scene
     fountainPos = Vec3(0, 10, 0);
     colliderFloor.setPlane(Vec3(0, 1, 0), 0);
+
+    // create spatial hashing
+    hash = new Hash(2.0*1.f,1000);
+
 }
 
 
@@ -68,6 +72,8 @@ void SceneFountain::reset(double dt, double bo, double fr, unsigned int dragt)
     fGravity->clearInfluencedParticles();
     system.deleteParticles();
     deadParticles.clear();
+
+    hash->create(system.getParticles());
 }
 
 
@@ -168,12 +174,14 @@ void SceneFountain::update() {
         p->radius = 1.0;
         p->life = maxParticleLife;
 
-        double x = Random::get(-2, 2);
+        double x = Random::get(-1, 1);
         double y = 0;
-        double z = Random::get(-2, 2);
+        double z = Random::get(-1, 1);
         p->pos = Vec3(0,y,0) + fountainPos;
-        p->vel = Vec3(x,30,z);
+        p->vel = Vec3(x,Random::get(28, 30),z);
     }
+
+    hash->create(system.getParticles());
 
     // integration step
     Vecd ppos = system.getPositions();
@@ -181,9 +189,33 @@ void SceneFountain::update() {
     system.setPreviousPositions(ppos);
 
     // collisions
-    for (Particle* p : system.getParticles()) {
-        if (colliderFloor.testCollision(p)) {
-            colliderFloor.resolveCollision(p, kBounce, kFriction);
+    for (Particle* pi : system.getParticles()) {
+        if (colliderFloor.testCollision(pi)) {
+            colliderFloor.resolveCollision(pi, kBounce, kFriction);
+        }
+        hash->query(system.getParticles(),pi->id,2.0 * 1.f);
+
+        for(unsigned int nr=0; nr<hash->querySize;nr++){
+            Particle *pj = system.getParticles()[hash->queryIds[nr]];
+            Vecd normal = pi->pos - pj->pos;
+            double d = (normal).norm();
+            double d2 = d*d;
+
+            if(d2 > 0.f && d2 < 2.f*2.f) {
+                normal = normal/d;
+
+                double corr = (2.0 - d) * 0.5;
+
+                pi->pos += normal*corr;
+                pj->pos -= normal*corr;
+
+                double vi = pi->vel.dot(normal);
+                double vj = pj->vel.dot(normal);
+
+                pi->vel += normal*(vj-vi);
+                pj->vel += normal*(vi-vj);
+
+            }
         }
     }
 

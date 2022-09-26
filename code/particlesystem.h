@@ -2,6 +2,7 @@
 #define PARTICLESYSTEM_H
 
 #include <vector>
+#include <QVector>
 #include "defines.h"
 #include "particle.h"
 #include "forces.h"
@@ -38,8 +39,8 @@ public:
     void addParticle(Particle* p);
     const Particle* getParticle(unsigned int i) const;
     Particle* getParticle(unsigned int i);
-    const std::vector<Particle*>& getParticles() const;
-    std::vector<Particle*>& getParticles();
+    const QVector<Particle*>& getParticles() const;
+    QVector<Particle*>& getParticles();
     void clearParticles();  // clears vector but does not delete items
     void deleteParticles(); // deletes items and clears vector
 
@@ -52,7 +53,7 @@ public:
     void deleteForces();    // deletes items and clears vector
 
 protected:
-    std::vector<Particle*>	particles;
+    QVector<Particle*>	particles;
     std::vector<Force*>		forces;
 };
 
@@ -77,11 +78,11 @@ inline Particle* ParticleSystem::getParticle(unsigned int i) {
     return particles[i];
 }
 
-inline const std::vector<Particle*>& ParticleSystem::getParticles() const {
+inline const QVector<Particle*>& ParticleSystem::getParticles() const {
     return particles;
 }
 
-inline std::vector<Particle*>& ParticleSystem::getParticles() {
+inline QVector<Particle*>& ParticleSystem::getParticles() {
     return particles;
 }
 
@@ -94,6 +95,7 @@ inline Force* ParticleSystem::getForce(unsigned int i) {
 }
 
 inline void ParticleSystem::addParticle(Particle *p) {
+    p->id = particles.size();
     particles.push_back(p);
 }
 
@@ -110,7 +112,7 @@ inline void ParticleSystem::clearForces() {
 }
 
 inline void ParticleSystem::deleteParticles() {
-    for (std::vector<Particle*>::iterator it = particles.begin(); it != particles.end(); it++)
+    for (QVector<Particle*>::iterator it = particles.begin(); it != particles.end(); it++)
         delete (*it);
     particles.clear();
 }
