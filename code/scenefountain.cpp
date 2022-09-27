@@ -40,6 +40,12 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     numFacesSphereS = sphere.numFaces();
     glutils::checkGLError();
 
+    // create big sphere VAOs
+    Model sphereBig = Model::createIcosphere(5);
+    vaoSphereBigS = glutils::createVAO(shader, &sphereBig);
+    numFacesSphereBigS = sphereBig.numFaces();
+    glutils::checkGLError();
+
 
     // create forces
     fGravity = new ForceConstAcceleration();
@@ -48,6 +54,8 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     // scene
     fountainPos = Vec3(0, 10, 0);
     colliderFloor.setPlane(Vec3(0, 1, 0), 0);
+    colliderSphere.setSphere(Vec3(20, 0, 20), 20);
+    colliderAABB.setAABB(Vec3(-10, -10, -10),Vec3(-5, -5, -5));
 
     // create spatial hashing
     hash = new Hash(2.0*1.f,1000);
@@ -126,6 +134,20 @@ void SceneFountain::paint(const Camera& camera) {
     shader->setUniformValue("matshin", 0.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+    // draw sphere
+    vaoSphereBigS->bind();
+    modelMat = QMatrix4x4();
+    modelMat.translate(colliderSphere.sphereC[0],colliderSphere.sphereC[1],colliderSphere.sphereC[2]);
+    modelMat.scale(colliderSphere.sphereR);
+    shader->setUniformValue("ModelMatrix", modelMat);
+    shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
+    shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
+    shader->setUniformValue("matshin", 0.f);
+    glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereBigS, GL_UNSIGNED_INT, 0);
+
+    // draw aabb
+
+
     // draw the different spheres
     vaoSphereS->bind();
     for (const Particle* particle : system.getParticles()) {
@@ -192,6 +214,9 @@ void SceneFountain::update() {
     for (Particle* pi : system.getParticles()) {
         if (colliderFloor.testCollision(pi)) {
             colliderFloor.resolveCollision(pi, kBounce, kFriction);
+        }
+        if (colliderSphere.testCollision(pi)) {
+            colliderSphere.resolveCollision(pi, kBounce, kFriction);
         }
         hash->query(system.getParticles(),pi->id,2.0 * 1.f);
 

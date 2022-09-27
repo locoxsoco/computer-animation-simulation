@@ -33,6 +33,36 @@ protected:
     double planeD;
 };
 
+class ColliderAABB: public Collider
+{
+public:
+    ColliderAABB() { pointA = Vec3(0,0,0); pointB = Vec3(0,0,0); }
+    ColliderAABB(const Vec3& a, const Vec3& b) : pointA(a), pointB(b) {}
+    virtual ~ColliderAABB() {}
 
+    void setAABB(const Vec3& a, const Vec3& b) { this->pointA = a; this->pointB = b; }
+
+    virtual bool testCollision(const Particle* p) const;
+    virtual void resolveCollision(Particle* p, double kElastic, double kFriction) const;
+
+protected:
+    Vec3 pointA, pointB;
+};
+
+class ColliderSphere : public Collider
+{
+public:
+    ColliderSphere() { sphereC = Vec3(0,0,0); sphereR = 0; }
+    ColliderSphere(const Vec3& c, double r) : sphereC(c), sphereR(r) {}
+    virtual ~ColliderSphere() {}
+
+    void setSphere(const Vec3& c, double r) { this->sphereC = c; this->sphereR = r; }
+
+    virtual bool testCollision(const Particle* p) const;
+    virtual void resolveCollision(Particle* p, double kElastic, double kFriction) const;
+
+    Vec3 sphereC;
+    double sphereR;
+};
 
 #endif // COLLIDERS_H

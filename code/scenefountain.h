@@ -42,15 +42,17 @@ protected:
     WidgetFountain* widget = nullptr;
 
     QOpenGLShaderProgram* shader = nullptr;
-    QOpenGLVertexArrayObject* vaoSphereS = nullptr;
+    QOpenGLVertexArrayObject* vaoSphereS = nullptr, * vaoSphereBigS = nullptr;
     QOpenGLVertexArrayObject* vaoFloor   = nullptr;
-    unsigned int numFacesSphereS = 0;
+    unsigned int numFacesSphereS=0, numFacesSphereBigS = 0;
 
     IntegratorEuler integrator;
     ParticleSystem system;
     std::list<Particle*> deadParticles;
     ForceConstAcceleration* fGravity;
     ColliderPlane colliderFloor;
+    ColliderSphere colliderSphere;
+    ColliderAABB colliderAABB;
 
     double kBounce, kFriction;
     double emitRate;
