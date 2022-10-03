@@ -11,7 +11,7 @@ class Hash {
 public:
     Hash(double spacing_var, unsigned int maxNumObjects){
         spacing = spacing_var;
-        tableSize = 10 * maxNumObjects;
+        tableSize = 2 * maxNumObjects;
         cellStart.resize(tableSize+1);
         cellEntries.resize(maxNumObjects);
         queryIds.resize(maxNumObjects);
@@ -19,24 +19,24 @@ public:
     }
 
     unsigned int hashCoords(int xi, int yi, int zi){
-        int h = (xi * 92837111) ^ (yi * 689289499) ^ (xi * 283923481);
+        int h = (xi * 92837111) ^ (yi * 689287499) ^ (zi * 283923481); // fantasy function
         return std::abs(h) % tableSize;
     }
 
-    int intCoord(int coord){
+    int intCoord(double coord){
         return std::floor(coord/ spacing);
     }
 
     unsigned int hashPos(QVector<Particle *> parts, unsigned int nr){
         return hashCoords(
-                    intCoord(int(parts[nr]->pos.x())),
-                    intCoord(int(parts[nr]->pos.y())),
-                    intCoord(int(parts[nr]->pos.z()))
+                    intCoord(parts[nr]->pos.x()),
+                    intCoord(parts[nr]->pos.y()),
+                    intCoord(parts[nr]->pos.z())
                     );
     }
 
     void create(QVector<Particle *> parts){
-        unsigned int numObjects = std::min(int(parts.size()),cellEntries.size());
+        unsigned int numObjects = std::min(parts.size(),cellEntries.size());
 
         // determine cell sizes
 
@@ -44,7 +44,7 @@ public:
         cellEntries.fill(0);
 
         for(unsigned int i=0; i < numObjects; i++){
-            int h = hashPos(parts,i);
+            unsigned int h = hashPos(parts,i);
             cellStart[h]++;
         }
 
@@ -60,27 +60,27 @@ public:
         // fill in objects ids
 
         for(unsigned int i=0; i < numObjects; i++){
-            int h = hashPos(parts,i);
+            unsigned int h = hashPos(parts,i);
             cellStart[h]--;
             cellEntries[cellStart[h]] = i;
         }
     }
 
-    void query(QVector<Particle *> parts, unsigned int nr, unsigned int maxDist){
-        int x0 = intCoord(int(parts[nr]->pos[0]) - maxDist);
-        int y0 = intCoord(int(parts[nr]->pos[1]) - maxDist);
-        int z0 = intCoord(int(parts[nr]->pos[2]) - maxDist);
+    void query(QVector<Particle *> parts, unsigned int nr, double maxDist){
+        int x0 = intCoord(parts[nr]->pos.x() - maxDist);
+        int y0 = intCoord(parts[nr]->pos.y() - maxDist);
+        int z0 = intCoord(parts[nr]->pos.z() - maxDist);
 
-        int x1 = intCoord(int(parts[nr]->pos[0]) + maxDist);
-        int y1 = intCoord(int(parts[nr]->pos[1]) + maxDist);
-        int z1 = intCoord(int(parts[nr]->pos[2]) + maxDist);
+        int x1 = intCoord(parts[nr]->pos.x() + maxDist);
+        int y1 = intCoord(parts[nr]->pos.y() + maxDist);
+        int z1 = intCoord(parts[nr]->pos.z() + maxDist);
 
         querySize = 0;
 
         for(int  xi=x0; xi<=x1; xi++){
             for(int  yi=y0;yi<=y1; yi++){
                 for(int  zi=z0;zi<=z1; zi++){
-                    int h = hashCoords(xi,yi,zi);
+                    unsigned int h = hashCoords(xi,yi,zi);
                     unsigned int start = cellStart[h];
                     unsigned int end = cellStart[h+1];
 

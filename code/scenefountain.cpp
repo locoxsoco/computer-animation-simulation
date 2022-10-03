@@ -58,7 +58,7 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     colliderAABB.setAABB(Vec3(-10, -10, -10),Vec3(-5, -5, -5));
 
     // create spatial hashing
-    hash = new Hash(1.f,1000);
+    hash = new Hash(2.0,1000);
 
 }
 
@@ -95,7 +95,7 @@ void SceneFountain::updateSimParams()
     kBounce = 0.5;
     kFriction = 0.1;
     maxParticleLife = 10.0;
-    emitRate = 20;
+    emitRate = 100;
 }
 
 
@@ -212,6 +212,7 @@ void SceneFountain::update() {
 
     // collisions
     for (Particle* pi : system.getParticles()) {
+        float particleMinDist = 2.0 * pi->radius;
         // Floor collider
         if (colliderFloor.testCollision(pi)) {
             colliderFloor.resolveCollision(pi, kBounce, kFriction);
@@ -221,7 +222,7 @@ void SceneFountain::update() {
             colliderSphere.resolveCollision(pi, kBounce, kFriction);
         }
         // Spatial Hashing collider
-        hash->query(system.getParticles(),pi->id,2.0 * 1.f);
+        hash->query(system.getParticles(),pi->id,2.0 * pi->radius);
 
         for(unsigned int nr=0; nr<hash->querySize;nr++){
             Particle *pj = system.getParticles()[hash->queryIds[nr]];
@@ -229,10 +230,10 @@ void SceneFountain::update() {
             double d = (normal).norm();
             double d2 = d*d;
 
-            if(d2 > 0.f && d2 < 2.f*2.f) {
+            if(d2 > 0.f && d2 < particleMinDist*particleMinDist) {
                 normal = normal/d;
 
-                double corr = (2.0 - d) * 0.5;
+                double corr = (particleMinDist - d) * 0.5;
 
                 pi->pos += normal*corr;
                 pj->pos -= normal*corr;
