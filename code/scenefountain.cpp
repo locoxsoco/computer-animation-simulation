@@ -58,7 +58,7 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     colliderAABB.setAABB(Vec3(-10, -10, -10),Vec3(-5, -5, -5));
 
     // create spatial hashing
-    hash = new Hash(2.0*1.f,1000);
+    hash = new Hash(1.f,1000);
 
 }
 
@@ -95,7 +95,7 @@ void SceneFountain::updateSimParams()
     kBounce = 0.5;
     kFriction = 0.1;
     maxParticleLife = 10.0;
-    emitRate = 100;
+    emitRate = 20;
 }
 
 
@@ -196,9 +196,9 @@ void SceneFountain::update() {
         p->radius = 1.0;
         p->life = maxParticleLife;
 
-        double x = Random::get(-1, 1);
+        double x = Random::get(-2, 2);
         double y = 0;
-        double z = Random::get(-1, 1);
+        double z = Random::get(-2, 2);
         p->pos = Vec3(0,y,0) + fountainPos;
         p->vel = Vec3(x,Random::get(28, 30),z);
     }
@@ -212,12 +212,15 @@ void SceneFountain::update() {
 
     // collisions
     for (Particle* pi : system.getParticles()) {
+        // Floor collider
         if (colliderFloor.testCollision(pi)) {
             colliderFloor.resolveCollision(pi, kBounce, kFriction);
         }
+        // Sphere collider
         if (colliderSphere.testCollision(pi)) {
             colliderSphere.resolveCollision(pi, kBounce, kFriction);
         }
+        // Spatial Hashing collider
         hash->query(system.getParticles(),pi->id,2.0 * 1.f);
 
         for(unsigned int nr=0; nr<hash->querySize;nr++){
@@ -277,5 +280,6 @@ void SceneFountain::mouseMoved(const QMouseEvent* e, const Camera& cam)
     }
     else {
         // do something else: e.g. move colliders
+        colliderSphere.sphereC += disp;
     }
 }

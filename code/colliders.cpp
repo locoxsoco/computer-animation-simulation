@@ -9,8 +9,7 @@
 bool ColliderPlane::testCollision(const Particle* p) const
 {
     // TODO
-    if((planeN.dot(p->pos)+planeD)*(planeN.dot(p->prevPos)+planeD)<=0) return true;
-    return false;
+    return (planeN.dot(p->pos)+planeD)*(planeN.dot(p->prevPos)+planeD)<=0;
 }
 
 void ColliderPlane::resolveCollision(Particle* p, double kElastic, double kFriction) const
@@ -31,19 +30,19 @@ bool ColliderSphere::testCollision(const Particle* p) const
 {
     // TODO
     Vecd pointDiff = p->pos-sphereC;
-    if((pointDiff.dot(pointDiff.transpose()))<=(sphereR*sphereR)) return true;
-    return false;
+    return pointDiff.dot(pointDiff.transpose())<=sphereR*sphereR;
 }
 
 void ColliderSphere::resolveCollision(Particle* p, double kElastic, double kFriction) const
 {
     // TODO
-    Vecd planeN = p->pos-sphereC;
+    // Decided to use prevPos instead of pos to improve bouncing visualization and avoid stickness glitch to the sphere
+    Vecd planeN = p->prevPos-sphereC;
     //double eqScale = planeN.norm();
     planeN = planeN/planeN.norm();
-    double planeD = -planeN.dot(p->pos);
+    double planeD = -planeN.dot(p->prevPos);
 
-    p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+    p->pos = p->prevPos - (1+kElastic)*(planeN.dot(p->prevPos)+planeD)*planeN;
     p->vel = p->vel - (1+kElastic)*planeN.dot(p->vel)*planeN;
 
     Vecd velT = p->vel - planeN.dot(p->vel)*planeN;
