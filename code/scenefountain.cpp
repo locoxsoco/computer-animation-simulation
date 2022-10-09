@@ -69,7 +69,7 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     colliderAABB.setAABB(Vec3(0, 0, 0),Vec3(15, 15, 30));
 
     // create spatial hashing
-    hash = new Hash(2.0,1000);
+    hash = new Hash(2.0,2000);
 
 }
 
@@ -108,7 +108,7 @@ void SceneFountain::updateSimParams()
     kBounce = 0.5;
     kFriction = 0.1;
     maxParticleLife = 10.0;
-    emitRate = 100;
+    emitRate = 200;
 }
 
 

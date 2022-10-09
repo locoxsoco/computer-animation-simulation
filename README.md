@@ -1,5 +1,31 @@
 # computer-animation-simulation
 
+## Lab 1: Particle Systems
+I have chosen the Midpoint Integrator since it has more appealing results when activating the blackhole gravitational attraction force with the lowest computation (RK2 and RK4 also give appealing results).
+
+![Lab0 Simulation](./images/Lab1.gif)
+
+### Particle systems with 1000s of particles DONE
+Tested with 2000 particles smoothly in release mode
+
+### Collisions: test & response DONE
+- Plane
+- AABB
+- Sphere
+
+### Gravity + another force DONE
+- Gravity
+- Linear Drag Force
+- Quadratic Drag Force
+- Gravitational attraction (Blackhole)
+
+### Mouse interaction DONE
+By selecting the object in the UI, we can move it by dragging the mouse and pressing the right-click
+
+### Bonus: Spatial Hash Table DONE
+
+---
+
 ## Lab 0: Warm Up
 
 ![Lab0 Simulation](./images/Lab0.png)
