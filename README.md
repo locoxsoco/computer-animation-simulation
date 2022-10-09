@@ -25,6 +25,8 @@ By selecting the object in the UI, we can move it by dragging the mouse and pres
 ### Bonus: Spatial Hash Table DONE
 ### Bonus: Snowball Scene DONE
 
+![Lab0 Simulation](./images/SnowballScene.gif)
+
 ---
 
 ## Lab 0: Warm Up
