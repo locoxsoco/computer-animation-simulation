@@ -50,6 +50,7 @@ public:
     static Model createCube(bool innerNormals=false);
     // radius 1 icosphere created from numSubdivisions of an icosahedron. 0 returns icosahedron.
     static Model createIcosphere(int numSubdivisions = 0);
+    static Model createIcosphereNI(int numSubdivisions = 0);
 
 };
 

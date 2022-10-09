@@ -130,3 +130,30 @@ void ColliderAABB::resolveCollision(Particle* p, double kElastic, double kFricti
     }
 
 }
+
+/*
+ * Snowball
+ */
+
+bool ColliderSnowball::testCollision(const Particle* p) const
+{
+    // TODO
+    Vecd pointDiff = p->pos-sphereC;
+    return pointDiff.dot(pointDiff.transpose())>=sphereR*sphereR;
+}
+
+void ColliderSnowball::resolveCollision(Particle* p, double kElastic, double kFriction) const
+{
+    // TODO
+    // Decided to use prevPos instead of pos to improve bouncing visualization and avoid stickness glitch to the sphere
+    Vecd planeN = -(p->prevPos-sphereC);
+    //double eqScale = planeN.norm();
+    planeN = planeN/planeN.norm();
+    double planeD = -planeN.dot(p->prevPos);
+
+    p->pos = p->prevPos - (1+kElastic)*(planeN.dot(p->prevPos)+planeD)*planeN;
+    p->vel = p->vel - (1+kElastic)*planeN.dot(p->vel)*planeN;
+
+    Vecd velT = p->vel - planeN.dot(p->vel)*planeN;
+    p->vel = p->vel - (kFriction)*velT;
+}

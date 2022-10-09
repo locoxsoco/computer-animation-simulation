@@ -7,5 +7,6 @@
         <file>shaders/lines.vert</file>
         <file>shaders/lines.geom</file>
         <file>shaders/lines.frag</file>
+        <file>shaders/phong_alpha.frag</file>
     </qresource>
 </RCC>

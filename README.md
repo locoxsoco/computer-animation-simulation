@@ -23,6 +23,7 @@ Tested with 2000 particles smoothly in release mode
 By selecting the object in the UI, we can move it by dragging the mouse and pressing the right-click
 
 ### Bonus: Spatial Hash Table DONE
+### Bonus: Snowball Scene DONE
 
 ---
 

@@ -21,8 +21,10 @@ SOURCES += \
     code/particlesystem.cpp \
     code/scenefountain.cpp \
     code/sceneprojectiles.cpp \
+    code/scenesnowball.cpp \
     code/widgetfountain.cpp \
     code/widgetprojectiles.cpp \
+    code/widgetsnowball.cpp
 
 HEADERS += \
     code/camera.h \
@@ -40,12 +42,15 @@ HEADERS += \
     code/scene.h \
     code/scenefountain.h \
     code/sceneprojectiles.h \
+    code/scenesnowball.h \
     code/widgetfountain.h \
     code/widgetprojectiles.h \
+    code/widgetsnowball.h
 
 FORMS += \
     forms/mainwindow.ui \
     forms/widgetfountain.ui \
     forms/widgetprojectiles.ui \
+    forms/widgetsnowball.ui
 
 RESOURCES += shaders.qrc

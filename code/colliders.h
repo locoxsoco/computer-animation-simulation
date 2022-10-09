@@ -64,4 +64,20 @@ public:
     double sphereR;
 };
 
+class ColliderSnowball : public Collider
+{
+public:
+    ColliderSnowball() { sphereC = Vec3(0,0,0); sphereR = 0; }
+    ColliderSnowball(const Vec3& c, double r) : sphereC(c), sphereR(r) {}
+    virtual ~ColliderSnowball() {}
+
+    void setSphere(const Vec3& c, double r) { this->sphereC = c; this->sphereR = r; }
+
+    virtual bool testCollision(const Particle* p) const;
+    virtual void resolveCollision(Particle* p, double kElastic, double kFriction) const;
+
+    Vec3 sphereC;
+    double sphereR;
+};
+
 #endif // COLLIDERS_H
