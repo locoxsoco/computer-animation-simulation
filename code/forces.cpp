@@ -19,6 +19,14 @@ void ForceDragQuadratic::apply() {
     for (Particle* p : particles) {
         // TODO
         p->force += -0.015 * p->vel.norm() * p->vel;
-        std::cout << "force Quadratic Drag: " << p->vel << std::endl;
+    }
+}
+
+void ForceBlackhole::apply() {
+    for (Particle* p : particles) {
+        // TODO
+        Vecd dirF = getPosition() - p->pos;
+        double dist = dirF.norm();
+        p->force += dirF*intensity*1000/(dist*dist*dist);
     }
 }

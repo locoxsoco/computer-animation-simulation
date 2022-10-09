@@ -11,7 +11,7 @@ public:
     virtual ~Force(void) {}
 
     virtual void apply() = 0;
-    virtual void setAcceleration(const Vec3& a) = 0;
+    //virtual void setAcceleration(const Vec3& a) = 0;
 
     void addInfluencedParticle(Particle* p) {
         particles.push_back(p);
@@ -67,6 +67,7 @@ protected:
     Vec3 acceleration;
 };
 
+
 class ForceDragQuadratic : public Force
 {
 public:
@@ -81,6 +82,26 @@ public:
 
 protected:
     Vec3 acceleration;
+};
+
+
+class ForceBlackhole : public Force
+{
+public:
+    ForceBlackhole() { position = Vec3(0,0,0); intensity = 0.f; }
+    ForceBlackhole(const Vec3& p, const float i) { position = p; intensity = i; }
+    virtual ~ForceBlackhole() {}
+
+    virtual void apply();
+
+    void setPosition(const Vec3& p) { position = p; }
+    Vec3 getPosition() const { return position; }
+    void setIntensity(const float i) { intensity = i; }
+    float getIntensity() const { return intensity; }
+
+
+    Vec3 position;
+    float intensity;
 };
 
 

@@ -83,3 +83,4 @@ void WidgetProjectiles::setSolver2(int idx) {
 void WidgetProjectiles::setSolver3(int idx) {
     ui->solver3->setCurrentIndex(idx);
 }
+

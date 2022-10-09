@@ -36,17 +36,16 @@ protected:
 class ColliderAABB: public Collider
 {
 public:
-    ColliderAABB() { pointA = Vec3(0,0,0); pointB = Vec3(0,0,0); }
-    ColliderAABB(const Vec3& a, const Vec3& b) : pointA(a), pointB(b) {}
+    ColliderAABB() { pos = Vec3(0,0,0); scale = Vec3(0,0,0); }
+    ColliderAABB(const Vec3& p, const Vec3& s) : pos(p), scale(s) {}
     virtual ~ColliderAABB() {}
 
-    void setAABB(const Vec3& a, const Vec3& b) { this->pointA = a; this->pointB = b; }
+    void setAABB(const Vec3& p, const Vec3& s) { this->pos = p; this->scale = s; }
 
     virtual bool testCollision(const Particle* p) const;
     virtual void resolveCollision(Particle* p, double kElastic, double kFriction) const;
 
-protected:
-    Vec3 pointA, pointB;
+    Vec3 pos, scale;
 };
 
 class ColliderSphere : public Collider

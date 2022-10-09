@@ -15,7 +15,9 @@ SceneFountain::~SceneFountain() {
     if (shader)     delete shader;
     if (vaoFloor)   delete vaoFloor;
     if (vaoSphereS) delete vaoSphereS;
+    if (vaoSphereBigS) delete vaoSphereBigS;
     if (fGravity)   delete fGravity;
+    if (fBlackhole) delete fBlackhole;
 }
 
 
@@ -46,16 +48,25 @@ void SceneFountain::initialize(double dt, double bo, double fr, unsigned int dra
     numFacesSphereBigS = sphereBig.numFaces();
     glutils::checkGLError();
 
+    // create AABB cube VAOs
+    Model cube = Model::createCube();
+    vaoCube = glutils::createVAO(shader, &cube);
+    numFacesCube = cube.numFaces();
+    glutils::checkGLError();
 
-    // create forces
+    // create gravity force
     fGravity = new ForceConstAcceleration();
     system.addForce(fGravity);
+
+    // create blackhole force
+    fBlackhole = new ForceBlackhole(Vec3(50, 50, 50), 100);
+    system.addForce(fBlackhole);
 
     // scene
     fountainPos = Vec3(0, 10, 0);
     colliderFloor.setPlane(Vec3(0, 1, 0), 0);
     colliderSphere.setSphere(Vec3(20, 0, 20), 20);
-    colliderAABB.setAABB(Vec3(-10, -10, -10),Vec3(-5, -5, -5));
+    colliderAABB.setAABB(Vec3(0, 0, 0),Vec3(15, 15, 30));
 
     // create spatial hashing
     hash = new Hash(2.0,1000);
@@ -78,6 +89,7 @@ void SceneFountain::reset(double dt, double bo, double fr, unsigned int dragt)
 
     // erase all particles
     fGravity->clearInfluencedParticles();
+    fBlackhole->clearInfluencedParticles();
     system.deleteParticles();
     deadParticles.clear();
 
@@ -90,6 +102,7 @@ void SceneFountain::updateSimParams()
     // get gravity from UI and update force
     double g = widget->getGravity();
     fGravity->setAcceleration(Vec3(0, -g, 0));
+    fBlackhole->setIntensity(widget->getBlackholeIntensity());
 
     // get other relevant UI values and update simulation params
     kBounce = 0.5;
@@ -145,7 +158,27 @@ void SceneFountain::paint(const Camera& camera) {
     shader->setUniformValue("matshin", 0.f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereBigS, GL_UNSIGNED_INT, 0);
 
+    // draw blackhole
+    vaoSphereS->bind();
+    modelMat = QMatrix4x4();
+    modelMat.translate(fBlackhole->getPosition().x(),fBlackhole->getPosition().y(),fBlackhole->getPosition().z());
+    modelMat.scale(1);
+    shader->setUniformValue("ModelMatrix", modelMat);
+    shader->setUniformValue("matdiff", GLfloat(0.f), GLfloat(0.f), GLfloat(0.f));
+    shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
+    shader->setUniformValue("matshin", 100.f);
+    glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
+
     // draw aabb
+    vaoCube->bind();
+    modelMat = QMatrix4x4();
+    modelMat.translate(colliderAABB.pos.x(),colliderAABB.pos.y(),colliderAABB.pos.z());
+    modelMat.scale(colliderAABB.scale.x(),colliderAABB.scale.y(),colliderAABB.scale.z());
+    shader->setUniformValue("ModelMatrix", modelMat);
+    shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
+    shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
+    shader->setUniformValue("matshin", 0.f);
+    glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesCube, GL_UNSIGNED_INT, 0);
 
 
     // draw the different spheres
@@ -190,6 +223,7 @@ void SceneFountain::update() {
 
             // don't forget to add particle to forces that affect it
             fGravity->addInfluencedParticle(p);
+            fBlackhole->addInfluencedParticle(p);
         }
 
         p->color = Vec3(153/255.0, 217/255.0, 234/255.0);
@@ -201,6 +235,7 @@ void SceneFountain::update() {
         double z = Random::get(-2, 2);
         p->pos = Vec3(0,y,0) + fountainPos;
         p->vel = Vec3(x,Random::get(28, 30),z);
+        p->prevPos = p->pos - timeStep*p->vel;;
     }
 
     hash->create(system.getParticles());
@@ -220,6 +255,10 @@ void SceneFountain::update() {
         // Sphere collider
         if (colliderSphere.testCollision(pi)) {
             colliderSphere.resolveCollision(pi, kBounce, kFriction);
+        }
+        // AABB collider
+        if (colliderAABB.testCollision(pi)) {
+            colliderAABB.resolveCollision(pi, kBounce, kFriction);
         }
         // Spatial Hashing collider
         hash->query(system.getParticles(),pi->id,2.0 * pi->radius);
@@ -281,6 +320,16 @@ void SceneFountain::mouseMoved(const QMouseEvent* e, const Camera& cam)
     }
     else {
         // do something else: e.g. move colliders
-        colliderSphere.sphereC += disp;
+        switch(widget->getMovableObjectId()) {
+        case 0:
+            colliderSphere.sphereC += disp;
+            break;
+        case 1:
+            colliderAABB.pos += disp;
+            break;
+        case 2:
+            fBlackhole->position += disp;
+            break;
+        }
     }
 }

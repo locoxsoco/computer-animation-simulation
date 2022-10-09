@@ -15,6 +15,8 @@ public:
     ~WidgetFountain();
 
     double getGravity()    const;
+    int getBlackholeIntensity()    const;
+    int getMovableObjectId() const;
 
 signals:
     void updatedParameters();
