@@ -3,6 +3,7 @@
 #include "sceneprojectiles.h"
 #include "scenefountain.h"
 #include "scenesnowball.h"
+#include "scenerope.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSceneProjectiles,&QAction::triggered, this, [=](void){ changeScene(new SceneProjectiles()); });
     connect(ui->actionSceneFountain,   &QAction::triggered, this, [=](void){ changeScene(new SceneFountain()); });
     connect(ui->actionSceneSnowball,   &QAction::triggered, this, [=](void){ changeScene(new SceneSnowball()); });
+    connect(ui->actionSceneRope,   &QAction::triggered, this, [=](void){ changeScene(new SceneRope()); });
 }
 
 MainWindow::~MainWindow()

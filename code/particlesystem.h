@@ -6,6 +6,7 @@
 #include "defines.h"
 #include "particle.h"
 #include "forces.h"
+#include "rope.h"
 
 class ParticleSystem
 {
@@ -43,6 +44,9 @@ public:
     QVector<Particle*>& getParticles();
     void clearParticles();  // clears vector but does not delete items
     void deleteParticles(); // deletes items and clears vector
+
+    // group of particles
+    void addRope(Rope* r);
 
     // forces
     void addForce(Force* f);

@@ -104,5 +104,19 @@ public:
     float intensity;
 };
 
+class ForceSpring : public Force
+{
+public:
+    ForceSpring() {}
+    ForceSpring(Particle* p1, Particle* p2) { addInfluencedParticle(p1); addInfluencedParticle(p2); L=(p2->pos-p1->pos).norm();}
+    virtual ~ForceSpring() {}
+
+    virtual void apply();
+
+    float ke = 10.f;
+    float kd = 10.f;
+    float L;
+};
+
 
 #endif // FORCES_H
