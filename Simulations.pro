@@ -19,10 +19,12 @@ SOURCES += \
     code/mainwindow.cpp \
     code/model.cpp \
     code/particlesystem.cpp \
+    code/scenecloth.cpp \
     code/scenefountain.cpp \
     code/sceneprojectiles.cpp \
     code/scenerope.cpp \
     code/scenesnowball.cpp \
+    code/widgetcloth.cpp \
     code/widgetfountain.cpp \
     code/widgetprojectiles.cpp \
     code/widgetrope.cpp \
@@ -30,6 +32,7 @@ SOURCES += \
 
 HEADERS += \
     code/camera.h \
+    code/cloth.h \
     code/colliders.h \
     code/defines.h \
     code/forces.h \
@@ -43,10 +46,12 @@ HEADERS += \
     code/particlesystem.h \
     code/rope.h \
     code/scene.h \
+    code/scenecloth.h \
     code/scenefountain.h \
     code/sceneprojectiles.h \
     code/scenerope.h \
     code/scenesnowball.h \
+    code/widgetcloth.h \
     code/widgetfountain.h \
     code/widgetprojectiles.h \
     code/widgetrope.h \
@@ -54,6 +59,7 @@ HEADERS += \
 
 FORMS += \
     forms/mainwindow.ui \
+    forms/widgetcloth.ui \
     forms/widgetfountain.ui \
     forms/widgetprojectiles.ui \
     forms/widgetrope.ui \

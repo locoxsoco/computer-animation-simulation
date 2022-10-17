@@ -113,8 +113,8 @@ public:
 
     virtual void apply();
 
-    float ke = 10.f;
-    float kd = 10.f;
+    float ke = 1.f;
+    float kd = 1.f;
     float L;
 };
 
