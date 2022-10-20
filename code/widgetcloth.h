@@ -20,9 +20,13 @@ public:
     double getKe() const;
     double getKd() const;
     int getRelaxationSteps() const;
+    bool getRenderParticles() const;
+    bool getRenderCloth() const;
+    bool getSelfCollisions() const;
 
 signals:
     void updatedParameters();
+    void releasedLockedParticles();
 
 private:
     Ui::WidgetCloth *ui;

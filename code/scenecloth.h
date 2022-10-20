@@ -28,6 +28,7 @@ public:
 
     virtual void mousePressed(const QMouseEvent* e, const Camera& cam);
     virtual void mouseMoved(const QMouseEvent* e, const Camera& cam);
+    virtual void mouseReleased(const QMouseEvent* e, const Camera& cam);
 
     virtual void getSceneBounds(Vec3& bmin, Vec3& bmax) {
         bmin = Vec3(-50, -10, -50);
@@ -39,6 +40,7 @@ public:
 
 public slots:
     void updateSimParams();
+    void releaseSimLockedParticles();
 
 protected:
     WidgetCloth* widget = nullptr;
@@ -59,7 +61,6 @@ protected:
     ColliderSphere colliderSphere;
     ColliderAABB colliderAABB;
 
-    double kBounce, kFriction;
     double emitRate;
     double maxParticleLife;
 
@@ -72,7 +73,10 @@ protected:
 
     float deformation_rate = 0.1f;
     int relaxation_steps = 10;
-    int numParticlesX=20, numParticlesY=20,numMeshIndices;
+    int numParticlesX=80, numParticlesY=40,numMeshIndices;
+
+    Particle* selectedPi=nullptr;
+    int select_pi_status=0;//0:available; 1:found; 2:failed;
 };
 
 #endif // SCENECLOTH_H

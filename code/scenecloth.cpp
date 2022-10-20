@@ -7,6 +7,7 @@
 SceneCloth::SceneCloth() {
     widget = new WidgetCloth();
     connect(widget, SIGNAL(updatedParameters()), this, SLOT(updateSimParams()));
+    connect(widget, SIGNAL(releasedLockedParticles()), this, SLOT(releaseSimLockedParticles()));
 }
 
 
@@ -65,7 +66,7 @@ void SceneCloth::initialize(double dt, double bo, double fr, unsigned int dragt)
     system.addForce(fBlackhole);
 
     // create cloth
-    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,100,-numParticlesY/2));
+    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,50,-numParticlesY/2));
     for(int i=0;i<cloth->particles.length();i++){
         system.addParticle(cloth->particles[i]);
         fGravity->addInfluencedParticle(cloth->particles[i]);
@@ -83,14 +84,14 @@ void SceneCloth::initialize(double dt, double bo, double fr, unsigned int dragt)
     vboMesh->create();
     vboMesh->bind();
     vboMesh->setUsagePattern(QOpenGLBuffer::UsagePattern::DynamicDraw);
-    vboMesh->allocate(1000*1000*3*3*sizeof(float)); // sync with widget max particles
+    vboMesh->allocate(cloth->numParticles*3*3*sizeof(float)); // sync with widget max particles
     shaderCloth->setAttributeBuffer("vertex", GL_FLOAT, 0, 3, 0);
     shaderCloth->enableAttributeArray("vertex");
     iboMesh = new QOpenGLBuffer(QOpenGLBuffer::Type::IndexBuffer);
     iboMesh->create();
     iboMesh->bind();
     iboMesh->setUsagePattern(QOpenGLBuffer::UsagePattern::StaticDraw);
-    iboMesh->allocate(1000*1000*2*3*sizeof(unsigned int));
+    iboMesh->allocate(cloth->numParticles*2*3*sizeof(unsigned int));
     vaoMesh->release();
     glutils::checkGLError();
 
@@ -99,14 +100,14 @@ void SceneCloth::initialize(double dt, double bo, double fr, unsigned int dragt)
     numMeshIndices = (numParticlesX - 1)*(numParticlesY - 1)*2*3;
     int* indices= new int[numMeshIndices];
     int idx = 0;
-    for(int i=0;i<numParticlesX-1;i++){
-        for(int j=0;j<numParticlesY-1;j++){
-            indices[idx  ] = i    *numParticlesY + j  ;
-            indices[idx+1] = (i+1)*numParticlesY + j  ;
-            indices[idx+2] = i    *numParticlesY + j+1;
-            indices[idx+3] = i    *numParticlesY + j+1;
-            indices[idx+4] = (i+1)*numParticlesY + j  ;
-            indices[idx+5] = (i+1)*numParticlesY + j+1;
+    for(int i=0;i<numParticlesY-1;i++){
+        for(int j=0;j<numParticlesX-1;j++){
+            indices[idx  ] = i    *numParticlesX + j  ;
+            indices[idx+1] = (i+1)*numParticlesX + j  ;
+            indices[idx+2] = i    *numParticlesX + j+1;
+            indices[idx+3] = i    *numParticlesX + j+1;
+            indices[idx+4] = (i+1)*numParticlesX + j  ;
+            indices[idx+5] = (i+1)*numParticlesX + j+1;
             idx += 6;
         }
     }
@@ -125,7 +126,7 @@ void SceneCloth::initialize(double dt, double bo, double fr, unsigned int dragt)
     colliderAABB.setAABB(Vec3(0, 0, 0),Vec3(15, 15, 30));
 
     // create spatial hashing
-    hash = new Hash(2.0,2000);
+    hash = new Hash(1.0,cloth->numParticles);
 
 }
 
@@ -157,7 +158,7 @@ void SceneCloth::reset(double dt, double bo, double fr, unsigned int dragt)
     system.addForce(fGravity);
     system.addForce(fBlackhole);
 
-    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,100,-numParticlesY/2));
+    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,50,-numParticlesY/2));
     for(int i=0;i<cloth->particles.length();i++){
         system.addParticle(cloth->particles[i]);
         fGravity->addInfluencedParticle(cloth->particles[i]);
@@ -172,14 +173,14 @@ void SceneCloth::reset(double dt, double bo, double fr, unsigned int dragt)
     numMeshIndices = (numParticlesX - 1)*(numParticlesY - 1)*2*3;
     int* indices= new int[numMeshIndices];
     int idx = 0;
-    for(int i=0;i<numParticlesX-1;i++){
-        for(int j=0;j<numParticlesY-1;j++){
-            indices[idx  ] = i    *numParticlesY + j  ;
-            indices[idx+1] = (i+1)*numParticlesY + j  ;
-            indices[idx+2] = i    *numParticlesY + j+1;
-            indices[idx+3] = i    *numParticlesY + j+1;
-            indices[idx+4] = (i+1)*numParticlesY + j  ;
-            indices[idx+5] = (i+1)*numParticlesY + j+1;
+    for(int i=0;i<numParticlesY-1;i++){
+        for(int j=0;j<numParticlesX-1;j++){
+            indices[idx  ] = i    *numParticlesX + j  ;
+            indices[idx+1] = (i+1)*numParticlesX + j  ;
+            indices[idx+2] = i    *numParticlesX + j+1;
+            indices[idx+3] = i    *numParticlesX + j+1;
+            indices[idx+4] = (i+1)*numParticlesX + j  ;
+            indices[idx+5] = (i+1)*numParticlesX + j+1;
             idx += 6;
         }
     }
@@ -224,10 +225,15 @@ void SceneCloth::updateSimParams()
     relaxation_steps = widget->getRelaxationSteps();
 
     // get other relevant UI values and update simulation params
-    kBounce = bouncing;
-    kFriction = friction;
     maxParticleLife = 10.0;
     emitRate = 200;
+}
+
+void SceneCloth::releaseSimLockedParticles()
+{
+    for(Particle* pi: cloth->particles){
+        if(pi->lock) pi->lock = false;
+    }
 }
 
 
@@ -259,6 +265,7 @@ void SceneCloth::paint(const Camera& camera) {
     // draw floor
     vaoFloor->bind();
     QMatrix4x4 modelMat;
+    modelMat.translate(0.f,-1.f,0.f);
     modelMat.scale(100, 1, 100);
     shader->setUniformValue("ModelMatrix", modelMat);
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
@@ -270,7 +277,7 @@ void SceneCloth::paint(const Camera& camera) {
     vaoSphereBigS->bind();
     modelMat = QMatrix4x4();
     modelMat.translate(colliderSphere.sphereC[0],colliderSphere.sphereC[1],colliderSphere.sphereC[2]);
-    modelMat.scale(colliderSphere.sphereR*0.95);
+    modelMat.scale(colliderSphere.sphereR*0.98);
     shader->setUniformValue("ModelMatrix", modelMat);
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
@@ -292,7 +299,7 @@ void SceneCloth::paint(const Camera& camera) {
     vaoCube->bind();
     modelMat = QMatrix4x4();
     modelMat.translate(colliderAABB.pos.x(),colliderAABB.pos.y(),colliderAABB.pos.z());
-    modelMat.scale(colliderAABB.scale.x(),colliderAABB.scale.y(),colliderAABB.scale.z());
+    modelMat.scale(colliderAABB.scale.x()*0.98f,colliderAABB.scale.y()*0.98f,colliderAABB.scale.z()*0.98f);
     shader->setUniformValue("ModelMatrix", modelMat);
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
@@ -301,56 +308,73 @@ void SceneCloth::paint(const Camera& camera) {
 
 
     // draw the different spheres
-    vaoSphereS->bind();
-    for (const Particle* particle : system.getParticles()) {
-        Vec3   p = particle->pos;
-        Vec3   c = particle->color;
-        double r = particle->radius;
+    if(widget->getRenderParticles()){
+        vaoSphereS->bind();
+        for (const Particle* particle : system.getParticles()) {
+            Vec3   p = particle->pos;
+            Vec3   c = particle->color;
+            double r = particle->radius;
 
-        modelMat = QMatrix4x4();
-        modelMat.translate(p[0], p[1], p[2]);
-        modelMat.scale(r);
-        shader->setUniformValue("ModelMatrix", modelMat);
+            modelMat = QMatrix4x4();
+            modelMat.translate(p[0], p[1], p[2]);
+            modelMat.scale(r);
+            shader->setUniformValue("ModelMatrix", modelMat);
 
-        shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
-        shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
-        shader->setUniformValue("matshin", 100.f);
+            shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
+            shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
+            shader->setUniformValue("matshin", 100.f);
 
-        glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
+            glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
+        }
     }
     shader->release();
 
     // draw cloth mesh
-    shaderCloth->bind();
+    if(widget->getRenderCloth()){
+        shaderCloth->bind();
 
-    // camera matrices
-    shaderCloth->setUniformValue("ProjMatrix", camProj);
-    shaderCloth->setUniformValue("ViewMatrix", camView);
-    shaderCloth->setUniformValue("radius", 1.f);
+        // camera matrices
+        shaderCloth->setUniformValue("ProjMatrix", camProj);
+        shaderCloth->setUniformValue("ViewMatrix", camView);
+        shaderCloth->setUniformValue("radius", 1.f);
 
-    shaderCloth->setUniformValue("numLights", numLights);
-    shaderCloth->setUniformValueArray("lightPos", lightPosCam, numLights);
-    shaderCloth->setUniformValueArray("lightColor", lightColor, numLights);
+        shaderCloth->setUniformValue("numLights", numLights);
+        shaderCloth->setUniformValueArray("lightPos", lightPosCam, numLights);
+        shaderCloth->setUniformValueArray("lightColor", lightColor, numLights);
 
-    vaoMesh->bind();
-    shaderCloth->setUniformValue("matdiffBack", 1.f, 0.f, 0.f);
-    shaderCloth->setUniformValue("matspecBack", 1.0f, 0.0f, 0.0f);
-    shaderCloth->setUniformValue("matshinBack", 1.0f);
-    shaderCloth->setUniformValue("matdiffFront", 0.0f, 0.f, 1.f);
-    shaderCloth->setUniformValue("matspecFront", 0.0f, 0.0f, 1.0f);
-    shaderCloth->setUniformValue("matshinFront", 1.0f);
-    glFuncs->glDrawElements(GL_TRIANGLES, 3*(numParticlesX-1)*(numParticlesY-1)*2, GL_UNSIGNED_INT, 0);
-    shaderCloth->release();
+        vaoMesh->bind();
+        shaderCloth->setUniformValue("matambBack", 0.f, 0.f, 0.f);
+        shaderCloth->setUniformValue("matdiffBack", 0.f, 0.f, 0.5f);
+        shaderCloth->setUniformValue("matspecBack", 0.6f, 0.6f, 0.7f);
+        shaderCloth->setUniformValue("matshinBack", 0.25f*128);
+        shaderCloth->setUniformValue("matambFront", 0.f, 0.f, 0.f);
+        shaderCloth->setUniformValue("matdiffFront", 0.5f, 0.f, 0.f);
+        shaderCloth->setUniformValue("matspecFront", 0.7f, 0.6f, 0.6f);
+        shaderCloth->setUniformValue("matshinFront", 0.25f*128);
+        /*shaderCloth->setUniformValue("matambBack", 1.0f, 0.5f, 0.31f);
+        shaderCloth->setUniformValue("matdiffBack", 1.0f, 0.5f, 0.31f);
+        shaderCloth->setUniformValue("matspecBack", 0.7f, 0.04f, 0.04f);
+        shaderCloth->setUniformValue("matshinBack", 32.0f);
+        shaderCloth->setUniformValue("matambFront", 0.0215f, 0.1745f, 	0.0215f);
+        shaderCloth->setUniformValue("matdiffFront", 0.07568f, 0.61424f, 0.07568f);
+        shaderCloth->setUniformValue("matspecFront", 0.633f, 0.727811f, 0.633f);
+        shaderCloth->setUniformValue("matshinFront", 0.6f*128);*/
+        glFuncs->glDrawElements(GL_TRIANGLES, 3*(numParticlesX-1)*(numParticlesY-1)*2, GL_UNSIGNED_INT, 0);
+        shaderCloth->release();
+    }
 }
 
 
 void SceneCloth::update() {
     double dt = timeStep;
+    float maxVelocity = 0.2 * cloth->thickness / dt;
 
     hash->create(system.getParticles());
+    float maxTravelDist = maxVelocity * dt;
+    hash->queryAll(system.getParticles(),maxTravelDist);
 
     int n_substeps=10;
-    for(int i=0;i<n_substeps;i++){
+    for(int i_substeps=0;i_substeps<n_substeps;i_substeps++){
         // integration step
         Vecd ppos = system.getPositions();
         integrator.step(system, dt/n_substeps);
@@ -363,10 +387,7 @@ void SceneCloth::update() {
                     Vec3 dir = fs_ps[1]->pos - fs_ps[0]->pos;
                     float dirPrev = fs->L;
                     if(dir.norm() > 1.1*dirPrev){
-                        if(fs_ps[0]->lock && fs_ps[1]->lock) {
-
-                        }
-                        else if (fs_ps[0]->lock) {
+                        if (fs_ps[0]->lock) {
                             fs_ps[1]->pos = fs_ps[0]->pos + 1.1*dirPrev*dir.normalized();
                         }
                         else if (fs_ps[1]->lock) {
@@ -378,10 +399,7 @@ void SceneCloth::update() {
                         }
                     }
                     else if(dir.norm() < 0.9*dirPrev){
-                        if(fs_ps[0]->lock && fs_ps[1]->lock) {
-
-                        }
-                        else if (fs_ps[0]->lock) {
+                        if (fs_ps[0]->lock) {
                             fs_ps[1]->pos = fs_ps[0]->pos + 0.9*dirPrev*dir.normalized();
                         }
                         else if (fs_ps[1]->lock) {
@@ -399,79 +417,107 @@ void SceneCloth::update() {
 
 
         // collisions
-        for (Particle* pi : system.getParticles()) {
-            float particleMinDist = 2.0 * pi->radius;
+        float thickness2 = cloth->thickness * cloth->thickness;
+        for (int i=0; i<cloth->numParticles;i++) {
+            int id0 = i;
+            Particle* p0 = system.getParticles()[id0];
+            float particleMinDist = 2.0 * p0->radius;
             // Floor collider
-            if (colliderFloor.testCollision(pi)) {
-                colliderFloor.resolveCollision(pi, bouncing, friction, dt/n_substeps);
+            if (colliderFloor.testCollision(p0)) {
+                colliderFloor.resolveCollision(p0, bouncing, friction, dt/n_substeps);
             }
             // Sphere collider
-            if (colliderSphere.testCollision(pi)) {
-                colliderSphere.resolveCollision(pi, bouncing, friction, dt/n_substeps);
+            if (colliderSphere.testCollision(p0)) {
+                colliderSphere.resolveCollision(p0, bouncing, friction, dt/n_substeps);
             }
             // AABB collider
-            if (colliderAABB.testCollision(pi)) {
-                colliderAABB.resolveCollision(pi, bouncing, friction, dt/n_substeps);
+            if (colliderAABB.testCollision(p0)) {
+                colliderAABB.resolveCollision(p0, bouncing, friction, dt/n_substeps);
             }
             // Spatial Hashing collider
-            hash->query(system.getParticles(),pi->id,2.0 * pi->radius);
+            if(widget->getSelfCollisions()){
+                if (1/p0->mass == 0.0)
+                    continue;
+                int first = hash->firstAdjId[i];
+                int last = hash->firstAdjId[i + 1];
 
-            for(unsigned int nr=0; nr<hash->querySize;nr++){
-                Particle *pj = system.getParticles()[hash->queryIds[nr]];
-                Vecd normal = pi->pos - pj->pos;
-                double d = (normal).norm();
-                double d2 = d*d;
+                for (int j = first; j < last; j++) {
 
-                if(d2 > 0.f && d2 < fmin(particleMinDist*particleMinDist, 1.f)) {
-                    normal = normal/d;
+                    int id1 = hash->adjIds[j];
+                    Particle* p1 = system.getParticles()[id1];
+                    if (1/p1->mass == 0.0)
+                        continue;
 
-                    double corr = (particleMinDist - d) * 0.5;
+                    Vec3 vecs = p1->pos-p0->pos;
+                    float dist2 = vecs.squaredNorm();
+                    if (dist2 > thickness2 || dist2 == 0.0)
+                        continue;
+                    float restDist2 = 1.f;
 
-                    pi->pos += normal*corr;
-                    pj->pos -= normal*corr;
+                    float minDist = cloth->thickness;
+                    if (dist2 > restDist2)
+                        continue;
+                    if (restDist2 < thickness2)
+                        minDist = sqrt(restDist2);
 
-                    double vi = pi->vel.dot(normal);
-                    double vj = pj->vel.dot(normal);
+                    // position correction
+                    float dist = sqrt(dist2);
+                    vecs *= (minDist - dist) / dist;
+                    p0->pos += -0.5*vecs;
+                    p1->pos += 0.5*vecs;
 
-                    pi->vel += normal*(vj-vi);
-                    pj->vel += normal*(vi-vj);
-                    // for verlet integrator
-                    pi->prevPos -=normal*(vj-vi)*dt/n_substeps;
-                    pj->prevPos -=normal*(vj-vi)*dt/n_substeps;
+                    // velocities
+                    Vec3 vecs0 = p0->pos - p0->prevPos;
+                    Vec3 vecs1 = p0->pos - p0->prevPos;
+
+                    // average velocity
+                    Vec3 vecs2 = (vecs0 + vecs1)*0.5;
+
+                    // velocity corrections
+                    vecs0 = vecs2 - vecs0;
+                    vecs1 = vecs2 - vecs1;
+
+                    // add corrections
+                    float friction = 0.0;
+                    p0->pos += friction*vecs0;
+                    p1->pos += friction*vecs1;
                 }
             }
         }
-
-        /*Vec3 v_avg(0.f,0.f,0.f);
-        for(Particle* pi:system.getParticles()){
-            v_avg += pi->vel;
-        }
-        v_avg /= numParticlesX*numParticlesY;
-        for(Particle* pi:system.getParticles()){
-            pi->pos += 0.1*(v_avg-pi->vel);
-        }*/
-
-        //update cloth mesh VBO coords
-        vboMesh->bind();
-        float* pos = new float[3*numParticlesX*numParticlesY];
-        for(int i = 0; i<numParticlesX*numParticlesY;i++){
-            pos[3*i  ]=system.getParticle(i)->pos.x();
-            pos[3*i+1]=system.getParticle(i)->pos.y();
-            pos[3*i+2]=system.getParticle(i)->pos.z();
-        }
-        void* bufptr = vboMesh->mapRange(0, 3*numParticlesX*numParticlesY*sizeof(float),
-                                         QOpenGLBuffer::RangeInvalidateBuffer | QOpenGLBuffer::RangeWrite);
-        memcpy(bufptr, (void*)pos, 3*numParticlesX*numParticlesY*sizeof(float));
-        vboMesh->unmap();
-        vboMesh->release();
-        delete[] pos;
     }
+    //update cloth mesh VBO coords
+    vboMesh->bind();
+    float* pos = new float[3*numParticlesX*numParticlesY];
+    for(int i = 0; i<numParticlesX*numParticlesY;i++){
+        pos[3*i  ]=system.getParticle(i)->pos.x();
+        pos[3*i+1]=system.getParticle(i)->pos.y();
+        pos[3*i+2]=system.getParticle(i)->pos.z();
+    }
+    void* bufptr = vboMesh->mapRange(0, 3*numParticlesX*numParticlesY*sizeof(float),
+                                     QOpenGLBuffer::RangeInvalidateBuffer | QOpenGLBuffer::RangeWrite);
+    memcpy(bufptr, (void*)pos, 3*numParticlesX*numParticlesY*sizeof(float));
+    vboMesh->unmap();
+    vboMesh->release();
+    delete[] pos;
 }
 
 void SceneCloth::mousePressed(const QMouseEvent* e, const Camera&)
 {
     mouseX = e->pos().x();
     mouseY = e->pos().y();
+}
+
+void SceneCloth::mouseReleased(const QMouseEvent* e, const Camera& cam)
+{
+    if(select_pi_status==1){
+        selectedPi->color = Vec3(1.f,1.f,1.f);
+    }
+    if(e->modifiers()&Qt::ShiftModifier && select_pi_status==1){
+        selectedPi->lock = true;
+        selectedPi->color = Vec3(0.1f,0.1f,0.1f);
+    }
+    selectedPi = nullptr;
+    select_pi_status=0;
 }
 
 void SceneCloth::mouseMoved(const QMouseEvent* e, const Camera& cam)
@@ -499,6 +545,37 @@ void SceneCloth::mouseMoved(const QMouseEvent* e, const Camera& cam)
             break;
         case 2:
             fBlackhole->position += disp;
+            break;
+        case 3:
+            Vec3 rayDir = cam.getRayDir(mouseX,mouseY);
+            if(select_pi_status==2){
+                break;
+            } else if(select_pi_status==1){
+                selectedPi->pos += disp;
+                break;
+            } else if(select_pi_status==0){
+                float i = 0.f;
+                while(!selectedPi && i<200){
+                    Vec3 rayPos = cam.getPos() + i*rayDir;
+                    hash->query(rayPos,0.5f);
+                    if(hash->querySize){
+                        for(int j=0;j<hash->querySize;j++){
+                            Vec3 sphereC = cloth->particles[hash->queryIds[j]]->pos;
+                            float sphereR = 1.f;//cloth->particles[hash->queryIds[j]]->radius;
+                            Vec3 pointDiff = rayPos-sphereC;
+                            if(pointDiff.dot(pointDiff.transpose())<=sphereR*sphereR){
+                                selectedPi = cloth->particles[hash->queryIds[j]];
+                                select_pi_status = 1;
+                                selectedPi->color = Vec3(1.f,0.f,0.f);
+                                selectedPi->pos += disp;
+                                break;
+                            }
+                        }
+                    }
+                    i+=2.f;
+                }
+                if(select_pi_status!=1)select_pi_status = 2;
+            }
             break;
         }
     }

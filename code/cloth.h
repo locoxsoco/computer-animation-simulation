@@ -14,11 +14,13 @@ public:
         for(int i=0;i<n_particles_height;i++) {
             for(int j=0;j<n_particles_width;j++) {
                 //cloth_particle = new Particle(start_position+Vec3(0.f,0.f,i));
-                particles.push_back(new Particle(start_position+Vec3(j*2,0.f,i*2)));
+                particles.push_back(new Particle(start_position+Vec3(j,0.f,i)));
             }
         }
         particles[0]->lock = true;
+        particles[0]->color = Vec3(0.1f,0.1f,0.1f);
         particles[n_particles_width-1]->lock = true;
+        particles[n_particles_width-1]->color = Vec3(0.1f,0.1f,0.1f);
 
         //ForceSpring* cloth_force_spring;
         for(int i=1;i<n_particles_height-1;i++) {
@@ -51,6 +53,7 @@ public:
                 force_springs.push_back(new ForceSpring(particles[i*n_particles_width+j],particles[(i+2)*n_particles_width+j],2));
             }
         }
+        numParticles = n_particles_height * n_particles_width;
     }
 
     ~Cloth() {
@@ -58,6 +61,8 @@ public:
 
     QVector<Particle*> particles;
     QVector<ForceSpring*> force_springs;
+    float thickness = 1.f;
+    int numParticles;
 };
 
 

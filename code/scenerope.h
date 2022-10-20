@@ -56,7 +56,6 @@ protected:
     ColliderSphere colliderSphere;
     ColliderAABB colliderAABB;
 
-    double kBounce, kFriction;
     double emitRate;
     double maxParticleLife;
 

@@ -3,9 +3,11 @@
 in vec3  fvertex;
 in vec3  fnormal;
 
+uniform vec3  matambFront;
 uniform vec3  matdiffFront;
 uniform vec3  matspecFront;
 uniform float matshinFront;
+uniform vec3  matambBack;
 uniform vec3  matdiffBack;
 uniform vec3  matspecBack;
 uniform float matshinBack;
@@ -20,6 +22,7 @@ uniform int  numLights;
 
 out vec4 FragColor;
 
+vec3 matamb;
 vec3 matdiff;
 vec3 matspec;
 float matshin;
@@ -55,12 +58,14 @@ void main()
 {
     vec3 N = normalize(fnormal);
         if (N.z < 0) {
+                matamb = matambBack;
                 matdiff = matdiffBack;
                 matspec = matspecBack;
                 matshin = matshinBack;
                 N = -N;
         }
         else {
+                matamb = matambFront;
                 matdiff = matdiffFront;
                 matspec = matspecFront;
                 matshin = matshinFront;

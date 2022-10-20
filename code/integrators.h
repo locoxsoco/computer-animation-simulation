@@ -32,7 +32,7 @@ public:
 class IntegratorVerlet : public Integrator {
 public:
     virtual void step(ParticleSystem& system, double dt);
-    double k = 1;
+    float k = 0.95f;
 };
 
 class IntegratorRK2 : public Integrator {

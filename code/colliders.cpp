@@ -76,45 +76,81 @@ bool ColliderAABB::testCollision(const Particle* p) const
 void ColliderAABB::resolveCollision(Particle* p, double kElastic, double kFriction, double dt) const
 {
     Vecd planeN;
-    Vecd velT;
+    Vecd velT= Vec3(0.f,0.f,0.f);
     double planeD;
-    Vecd velElastic;
+    Vecd velElastic= Vec3(0.f,0.f,0.f);
     // Collision with axis -x
     if( p->prevPos.x() <= (pos.x()-scale.x()) && p->pos.x() >= (pos.x()-scale.x()) ){
         planeN = Vec3(-1.f,0.f,0.f);
         planeD = (pos.x()-scale.x());
+
+        p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+        velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
+        p->vel = p->vel + velElastic;
+
+        velT = p->vel - planeN.dot(p->vel)*planeN;
+        p->vel = p->vel - (kFriction)*velT;
     }
     // Collision with axis x
     else if( p->prevPos.x() >= (pos.x()+scale.x()) && p->pos.x() <= (pos.x()+scale.x()) ){
         planeN = Vec3(1.f,0.f,0.f);
         planeD = -(pos.x()+scale.x());
+
+        p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+        velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
+        p->vel = p->vel + velElastic;
+
+        velT = p->vel - planeN.dot(p->vel)*planeN;
+        p->vel = p->vel - (kFriction)*velT;
     }
     // Collision with axis -y
     else if( p->prevPos.y() <= (pos.y()-scale.y()) && p->pos.y() >= (pos.y()-scale.y()) ){
         planeN = Vec3(0.f,-1.f,0.f);
         planeD = (pos.y()-scale.y());
+
+        p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+        velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
+        p->vel = p->vel + velElastic;
+
+        velT = p->vel - planeN.dot(p->vel)*planeN;
+        p->vel = p->vel - (kFriction)*velT;
     }
     // Collision with axis y
     else if( p->prevPos.y() >= (pos.y()+scale.y()) && p->pos.y() <= (pos.y()+scale.y()) ){
         planeN = Vec3(0.f,1.f,0.f);
         planeD = -(pos.y()+scale.y());
+
+        p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+        velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
+        p->vel = p->vel + velElastic;
+
+        velT = p->vel - planeN.dot(p->vel)*planeN;
+        p->vel = p->vel - (kFriction)*velT;
     }
     // Collision with axis -z
     else if( p->prevPos.z() <= (pos.z()-scale.z()) && p->pos.z() >= (pos.z()-scale.z()) ){
         planeN = Vec3(0.f,0.f,-1.f);
         planeD = (pos.z()-scale.z());
+
+        p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+        velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
+        p->vel = p->vel + velElastic;
+
+        velT = p->vel - planeN.dot(p->vel)*planeN;
+        p->vel = p->vel - (kFriction)*velT;
     }
     // Collision with axis z
     else if( p->prevPos.z() >= (pos.z()+scale.z()) && p->pos.z() <= (pos.z()+scale.z()) ){
         planeN = Vec3(0.f,0.f,1.f);
         planeD = -(pos.z()+scale.z());
-    }
-    p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
-    velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
-    p->vel = p->vel + velElastic;
 
-    velT = p->vel - planeN.dot(p->vel)*planeN;
-    p->vel = p->vel - (kFriction)*velT;
+        p->pos = p->pos - (1+kElastic)*(planeN.dot(p->pos)+planeD)*planeN;
+        velElastic = - (1+kElastic)*planeN.dot(p->vel)*planeN;
+        p->vel = p->vel + velElastic;
+
+        velT = p->vel - planeN.dot(p->vel)*planeN;
+        p->vel = p->vel - (kFriction)*velT;
+    }    
 
     //for verlet integration
     p->prevPos -= (velElastic - (kFriction)*velT)*dt;

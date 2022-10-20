@@ -64,7 +64,7 @@ void SceneRope::initialize(double dt, double bo, double fr, unsigned int dragt) 
     system.addForce(fBlackhole);
 
     // create rope
-    rope = new Rope(20,Vec3(-20,20,-20));
+    rope = new Rope(20,Vec3(-20,80,-20));
     for(int i=0;i<rope->particles.length();i++){
         system.addParticle(rope->particles[i]);
         fGravity->addInfluencedParticle(rope->particles[i]);
@@ -113,7 +113,7 @@ void SceneRope::reset(double dt, double bo, double fr, unsigned int dragt)
     system.addForce(fGravity);
     system.addForce(fBlackhole);
 
-    rope = new Rope(20,Vec3(-20,50,-20));
+    rope = new Rope(20,Vec3(-20,80,-20));
     for(int i=0;i<rope->particles.length();i++){
         system.addParticle(rope->particles[i]);
         fGravity->addInfluencedParticle(rope->particles[i]);
@@ -140,8 +140,6 @@ void SceneRope::updateSimParams()
     }
 
     // get other relevant UI values and update simulation params
-    kBounce = bouncing;
-    kFriction = friction;
     maxParticleLife = 10.0;
     emitRate = 200;
 }
