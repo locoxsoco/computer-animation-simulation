@@ -59,7 +59,7 @@ void ColliderSphere::resolveCollision(Particle* p, double kElastic, double kFric
     }
 
     //for verlet integration
-    p->prevPos -= (velElastic - (kFriction)*velT)*dt;
+    p->prevPos -= 0.9*(velElastic - (kFriction)*velT)*dt;
 }
 
 /*

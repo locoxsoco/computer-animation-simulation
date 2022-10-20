@@ -73,7 +73,7 @@ protected:
 
     float deformation_rate = 0.1f;
     int relaxation_steps = 10;
-    int numParticlesX=80, numParticlesY=40,numMeshIndices;
+    int numParticlesX=60, numParticlesY=60,numMeshIndices;
 
     Particle* selectedPi=nullptr;
     int select_pi_status=0;//0:available; 1:found; 2:failed;
