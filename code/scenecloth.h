@@ -3,6 +3,7 @@
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
 #include <list>
 #include "scene.h"
 #include "widgetcloth.h"
@@ -43,11 +44,13 @@ protected:
     WidgetCloth* widget = nullptr;
 
     QOpenGLShaderProgram* shader = nullptr;
-    QOpenGLVertexArrayObject* vaoSphereS = nullptr, *vaoSphereBigS = nullptr, *vaoCube = nullptr;
+    QOpenGLVertexArrayObject* vaoSphereS = nullptr, *vaoSphereBigS = nullptr, *vaoCube = nullptr,*vaoMesh=nullptr;
     QOpenGLVertexArrayObject* vaoFloor   = nullptr;
+    QOpenGLBuffer* vboMesh=nullptr, *iboMesh=nullptr;
+    QOpenGLShaderProgram* shaderCloth = nullptr;
     unsigned int numFacesSphereS=0, numFacesSphereBigS = 0, numFacesCube = 0;
 
-    IntegratorMidpoint integrator;
+    IntegratorVerlet integrator;
     ParticleSystem system;
     std::list<Particle*> deadParticles;
     ForceConstAcceleration* fGravity;
@@ -65,6 +68,11 @@ protected:
 
     Hash *hash;
     Cloth* cloth;
+
+
+    float deformation_rate = 0.1f;
+    int relaxation_steps = 10;
+    int numParticlesX=20, numParticlesY=20,numMeshIndices;
 };
 
 #endif // SCENECLOTH_H

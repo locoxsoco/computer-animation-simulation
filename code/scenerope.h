@@ -47,7 +47,7 @@ protected:
     QOpenGLVertexArrayObject* vaoFloor   = nullptr;
     unsigned int numFacesSphereS=0, numFacesSphereBigS = 0, numFacesCube = 0;
 
-    IntegratorMidpoint integrator;
+    IntegratorVerlet integrator;
     ParticleSystem system;
     std::list<Particle*> deadParticles;
     ForceConstAcceleration* fGravity;

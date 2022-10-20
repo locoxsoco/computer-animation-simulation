@@ -1,4 +1,4 @@
-#include "widgetrope.h"
+ #include "widgetrope.h"
 #include "ui_widgetrope.h"
 
 WidgetRope::WidgetRope(QWidget *parent) :
@@ -26,4 +26,12 @@ int WidgetRope::getBlackholeIntensity() const {
 
 int WidgetRope::getMovableObjectId() const {
     return ui->radioButton->isChecked()?0:ui->radioButton_2->isChecked()?1:2;
+}
+
+double WidgetRope::getKe() const {
+    return ui->spinBox_ke->value();
+}
+
+double WidgetRope::getKd() const {
+    return ui->spinBox_kd->value();
 }

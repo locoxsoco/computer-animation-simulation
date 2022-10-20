@@ -105,8 +105,8 @@ void SceneFountain::updateSimParams()
     fBlackhole->setIntensity(widget->getBlackholeIntensity());
 
     // get other relevant UI values and update simulation params
-    kBounce = 0.5;
-    kFriction = 0.1;
+    kBounce = bouncing;
+    kFriction = friction;
     maxParticleLife = 10.0;
     emitRate = 200;
 }
@@ -250,15 +250,15 @@ void SceneFountain::update() {
         float particleMinDist = 2.0 * pi->radius;
         // Floor collider
         if (colliderFloor.testCollision(pi)) {
-            colliderFloor.resolveCollision(pi, kBounce, kFriction);
+            colliderFloor.resolveCollision(pi, bouncing, friction, dt);
         }
         // Sphere collider
         if (colliderSphere.testCollision(pi)) {
-            colliderSphere.resolveCollision(pi, kBounce, kFriction);
+            colliderSphere.resolveCollision(pi, bouncing, friction, dt);
         }
         // AABB collider
         if (colliderAABB.testCollision(pi)) {
-            colliderAABB.resolveCollision(pi, kBounce, kFriction);
+            colliderAABB.resolveCollision(pi, bouncing, friction, dt);
         }
         // Spatial Hashing collider
         hash->query(system.getParticles(),pi->id,2.0 * pi->radius);

@@ -13,7 +13,6 @@ SceneSnowball::SceneSnowball() {
 SceneSnowball::~SceneSnowball() {
     if (widget)     delete widget;
     if (shader)     delete shader;
-    if (shader_alpha)     delete shader_alpha;
     if (vaoSphereS) delete vaoSphereS;
     if (vaoSphereBigS) delete vaoSphereBigS;
     if (fGravity)   delete fGravity;
@@ -30,7 +29,6 @@ void SceneSnowball::initialize(double dt, double bo, double fr, unsigned int dra
 
     // load shader
     shader = glutils::loadShaderProgram(":/shaders/phong.vert", ":/shaders/phong.frag");
-    shader_alpha = glutils::loadShaderProgram(":/shaders/phong.vert", ":/shaders/phong_alpha.frag");
 
     // create sphere VAOs
     Model sphere = Model::createIcosphere(1);
@@ -40,7 +38,6 @@ void SceneSnowball::initialize(double dt, double bo, double fr, unsigned int dra
 
     // create big sphere VAOs
     Model sphereBig = Model::createIcosphereNI(5);
-    vaoSphereBigS = glutils::createVAO(shader_alpha, &sphereBig);
     numFacesSphereBigS = sphereBig.numFaces();
     glutils::checkGLError();
 
@@ -249,7 +246,7 @@ void SceneSnowball::update() {
         float particleMinDist = 2.0 * pi->radius;
         // Sphere collider
         if (colliderSnowball.testCollision(pi)) {
-            colliderSnowball.resolveCollision(pi, kBounce, kFriction);
+            colliderSnowball.resolveCollision(pi, kBounce, kFriction, dt);
         }
         // Spatial Hashing collider
         /*hash->query(system.getParticles(),pi->id,2.0 * pi->radius);

@@ -42,7 +42,6 @@ protected:
     WidgetSnowball* widget = nullptr;
 
     QOpenGLShaderProgram* shader = nullptr;
-    QOpenGLShaderProgram* shader_alpha = nullptr;
     QOpenGLVertexArrayObject* vaoSphereS = nullptr, *vaoSphereBigS = nullptr;
     unsigned int numFacesSphereS=0, numFacesSphereBigS = 0;
 

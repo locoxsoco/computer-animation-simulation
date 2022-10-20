@@ -109,13 +109,15 @@ class ForceSpring : public Force
 public:
     ForceSpring() {}
     ForceSpring(Particle* p1, Particle* p2) { addInfluencedParticle(p1); addInfluencedParticle(p2); L=(p2->pos-p1->pos).norm();}
+    ForceSpring(Particle* p1, Particle* p2, int t) { addInfluencedParticle(p1); addInfluencedParticle(p2); L=(p2->pos-p1->pos).norm(); type=t;}
     virtual ~ForceSpring() {}
 
     virtual void apply();
 
     float ke = 1.f;
-    float kd = 1.f;
+    float kd = 0.5f;
     float L;
+    int type=0; // 0: Stretch, 1: Shear, 2: Bend
 };
 
 

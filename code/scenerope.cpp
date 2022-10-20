@@ -122,6 +122,8 @@ void SceneRope::reset(double dt, double bo, double fr, unsigned int dragt)
     for(int i=0;i<rope->force_springs.length();i++){
         system.addForce(rope->force_springs[i]);
     }
+
+    updateSimParams();
 }
 
 
@@ -132,9 +134,14 @@ void SceneRope::updateSimParams()
     fGravity->setAcceleration(Vec3(0, -g, 0));
     fBlackhole->setIntensity(widget->getBlackholeIntensity());
 
+    for(ForceSpring* fs : rope->force_springs){
+        fs->ke = widget->getKe();
+        fs->kd = widget->getKd();
+    }
+
     // get other relevant UI values and update simulation params
-    kBounce = 0.5;
-    kFriction = 0.1;
+    kBounce = bouncing;
+    kFriction = friction;
     maxParticleLife = 10.0;
     emitRate = 200;
 }
@@ -278,15 +285,15 @@ void SceneRope::update() {
         float particleMinDist = 2.0 * pi->radius;
         // Floor collider
         if (colliderFloor.testCollision(pi)) {
-            colliderFloor.resolveCollision(pi, kBounce, kFriction);
+            colliderFloor.resolveCollision(pi, bouncing, friction, dt);
         }
         // Sphere collider
         if (colliderSphere.testCollision(pi)) {
-            colliderSphere.resolveCollision(pi, kBounce, kFriction);
+            colliderSphere.resolveCollision(pi, bouncing, friction, dt);
         }
         // AABB collider
         if (colliderAABB.testCollision(pi)) {
-            colliderAABB.resolveCollision(pi, kBounce, kFriction);
+            colliderAABB.resolveCollision(pi, bouncing, friction, dt);
         }
         // Spatial Hashing collider
         /*hash->query(system.getParticles(),pi->id,2.0 * pi->radius);

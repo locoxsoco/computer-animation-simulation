@@ -17,6 +17,8 @@ public:
     double getGravity()    const;
     int getBlackholeIntensity()    const;
     int getMovableObjectId() const;
+    double getKe() const;
+    double getKd() const;
 
 signals:
     void updatedParameters();
