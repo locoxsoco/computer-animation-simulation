@@ -11,7 +11,7 @@ class Hash {
 public:
     Hash(double spacing_var, unsigned int maxNObjects){
         spacing = spacing_var;
-        tableSize = 2 * maxNObjects;
+        tableSize = 5 * maxNObjects;
         cellStart.resize(tableSize+1);
         cellEntries.resize(maxNObjects);
         queryIds.resize(maxNObjects);

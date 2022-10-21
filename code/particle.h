@@ -18,6 +18,7 @@ public:
     Vec3 color    = Vec3(1, 1, 1);
     unsigned int id = 0;
     bool lock = false;
+    int id_height,id_width;
 
     Particle() {
         pos	    = Vec3(0.0, 0.0, 0.0);
@@ -53,6 +54,17 @@ public:
         prevPos = pos;
         mass    = 1.0;
         lock = false;
+    }
+
+    Particle(const Vec3& p, int id_h, int id_w) {
+        pos	    = p;
+        vel	    = Vec3(0.0, 0.0, 0.0);
+        force   = Vec3(0.0, 0.0, 0.0);
+        prevPos = pos;
+        mass    = 1.0;
+        lock = false;
+        id_height = id_h;
+        id_width= id_w;
     }
 
     Particle(const Particle& p) {

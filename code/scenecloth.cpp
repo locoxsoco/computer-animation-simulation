@@ -66,7 +66,7 @@ void SceneCloth::initialize(double dt, double bo, double fr, unsigned int dragt)
     system.addForce(fBlackhole);
 
     // create cloth
-    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,50,-numParticlesY/2));
+    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,100,-numParticlesY/2));
     for(int i=0;i<cloth->particles.length();i++){
         system.addParticle(cloth->particles[i]);
         fGravity->addInfluencedParticle(cloth->particles[i]);
@@ -126,7 +126,7 @@ void SceneCloth::initialize(double dt, double bo, double fr, unsigned int dragt)
     colliderAABB.setAABB(Vec3(0, 0, 0),Vec3(15, 15, 30));
 
     // create spatial hashing
-    hash = new Hash(1.0,cloth->numParticles);
+    hash = new Hash(1.f,cloth->numParticles);
 
 }
 
@@ -158,7 +158,7 @@ void SceneCloth::reset(double dt, double bo, double fr, unsigned int dragt)
     system.addForce(fGravity);
     system.addForce(fBlackhole);
 
-    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,50,-numParticlesY/2));
+    cloth = new Cloth(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,100,-numParticlesY/2));
     for(int i=0;i<cloth->particles.length();i++){
         system.addParticle(cloth->particles[i]);
         fGravity->addInfluencedParticle(cloth->particles[i]);
@@ -232,7 +232,10 @@ void SceneCloth::updateSimParams()
 void SceneCloth::releaseSimLockedParticles()
 {
     for(Particle* pi: cloth->particles){
-        if(pi->lock) pi->lock = false;
+        if(pi->lock){
+            pi->lock = false;
+            pi->color = Vec3(1.f,1.f,1.f);
+        }
     }
 }
 
@@ -452,7 +455,7 @@ void SceneCloth::update() {
                     float dist2 = vecs.squaredNorm();
                     if (dist2 > thickness2 || dist2 == 0.0)
                         continue;
-                    float restDist2 = 1.f;
+                    float restDist2 = (Vec3(p0->id_width,0.f,p0->id_height)-Vec3(p1->id_width,0.f,p1->id_height)).squaredNorm();
 
                     float minDist = cloth->thickness;
                     if (dist2 > restDist2)
@@ -468,7 +471,7 @@ void SceneCloth::update() {
 
                     // velocities
                     Vec3 vecs0 = p0->pos - p0->prevPos;
-                    Vec3 vecs1 = p0->pos - p0->prevPos;
+                    Vec3 vecs1 = p1->pos - p1->prevPos;
 
                     // average velocity
                     Vec3 vecs2 = (vecs0 + vecs1)*0.5;
@@ -478,7 +481,7 @@ void SceneCloth::update() {
                     vecs1 = vecs2 - vecs1;
 
                     // add corrections
-                    float friction = 0.0;
+                    float friction = 0.00;
                     p0->pos += friction*vecs0;
                     p1->pos += friction*vecs1;
                 }

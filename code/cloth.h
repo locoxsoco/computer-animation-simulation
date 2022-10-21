@@ -14,7 +14,7 @@ public:
         for(int i=0;i<n_particles_height;i++) {
             for(int j=0;j<n_particles_width;j++) {
                 //cloth_particle = new Particle(start_position+Vec3(0.f,0.f,i));
-                particles.push_back(new Particle(start_position+Vec3(j,0.f,i)));
+                particles.push_back(new Particle(start_position+Vec3(j,0.f,i),i,j));
             }
         }
         particles[0]->lock = true;
@@ -61,7 +61,7 @@ public:
 
     QVector<Particle*> particles;
     QVector<ForceSpring*> force_springs;
-    float thickness = 1.f;
+    float thickness = 0.5f;
     int numParticles;
 };
 
