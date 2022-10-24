@@ -5,6 +5,7 @@
 #include "scenesnowball.h"
 #include "scenerope.h"
 #include "scenecloth.h"
+#include "sceneop.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSceneSnowball,   &QAction::triggered, this, [=](void){ changeScene(new SceneSnowball()); });
     connect(ui->actionSceneRope,   &QAction::triggered, this, [=](void){ changeScene(new SceneRope()); });
     connect(ui->actionSceneCloth,   &QAction::triggered, this, [=](void){ changeScene(new SceneCloth()); });
+    connect(ui->actionGame,   &QAction::triggered, this, [=](void){ changeScene(new SceneOP()); });
 }
 
 MainWindow::~MainWindow()

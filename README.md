@@ -2,44 +2,69 @@
 
 ## Lab 2: Cloth Simulation
 
-![Lab2 Simulation](./images/Lab2/Lab2.gif)
+<img src="./images/Lab2/Lab2.gif" width="480" height="516">
+
 
 ### Collisions
 
 #### Particle-collider DONE
 
 ##### Sphere Collision
-![Cloth Sphere Collision](./images/Lab2/sphere-collision.png)
+<img src="./images/Lab2/sphere-collision.png" width="480" height="516">
 
 ##### Box Collision
-![Box Sphere Collision](./images/Lab2/box-collision.png)
+<img src="./images/Lab2/box-collision.png" width="480" height="516">
 
 #### Prevent self-intersections
-![Self Collision](./images/Lab2/self-collision.png)
+<img src="./images/Lab2/self-collision.png" width="480" height="516">
 
 ##### Use Particles & Particle Hash DONE
+Adjusted the Particle Spatial Hash from Lab1
 
 ##### Consider Rest Distance and avoid Jittering DONE
+Set a minimum distance between the Rest Distance and collision distance
 
 ##### Use Substepping, not CCD DONE
+Set substepping=10 for the integrator step and collision detection
 
 ##### Stable Cloth-Cloth Friction DONE
+
+### Integrator Used
+Better results with Verlet, but other integrators work as well.
 
 ### Interactions
 
 #### Grab and move particles DONE
+Taking advantage of the spatial hash, perform a ray-particle collision detection.
 
-![Grab & Move Particles](./images/Lab2/grab-and-move-particles.gif)
+<img src="./images/Lab2/grab-and-move-particles.gif" width="480" height="516">
 
 
 #### Fix/Release particles DONE
-
-![Fix & Release Particles](./images/Lab2/fix-and-release-particles.gif)
+<img src="./images/Lab2/fix-and-release-particles.gif" width="480" height="516">
 
 
 #### Blackhole DONE
+<img src="./images/Lab2/blackhole-interaction.gif" width="480" height="516">
 
-![Blackhole Interaction](./images/Lab2/blackhole-interaction.gif)
+#### Boat Scene :o
+Verlet Integrator is not working well for the fountain, so had to try others like RK2 to avoid using custom integrators for cloths and other for fountain particles.
+
+<img src="./images/Lab2/boat-scene.gif" width="480" height="516">
+
+### Issues
+
+#### Self-intersection not looking properly
+Even adding the recommended steps to achieve self-intersection, it still looks flat, and by increasing the thickness, the cloth starts to become unstable.
+
+#### Cloth Simulation exploded easily
+Starting with Symplectic Euler, increasing the kElastic to +400.0 helps with stability, then implementing relaxation steps, and finally moving to Verlet integrator which is Physically Based Dyanmics (more stable!).
+
+
+#### Sphere not colliding when moved
+Had to adjust a bit the formula for Verlet by updating the prevPos with the velocity added because of the collision.
+
+
 ---
 
 ## Lab 1: Particle Systems

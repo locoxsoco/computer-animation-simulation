@@ -1,4 +1,4 @@
-QT       += core gui opengl
+QT       += core gui opengl multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -21,11 +21,13 @@ SOURCES += \
     code/particlesystem.cpp \
     code/scenecloth.cpp \
     code/scenefountain.cpp \
+    code/sceneop.cpp \
     code/sceneprojectiles.cpp \
     code/scenerope.cpp \
     code/scenesnowball.cpp \
     code/widgetcloth.cpp \
     code/widgetfountain.cpp \
+    code/widgetop.cpp \
     code/widgetprojectiles.cpp \
     code/widgetrope.cpp \
     code/widgetsnowball.cpp
@@ -45,14 +47,17 @@ HEADERS += \
     code/particle.h \
     code/particlesystem.h \
     code/rope.h \
+    code/sail.h \
     code/scene.h \
     code/scenecloth.h \
     code/scenefountain.h \
+    code/sceneop.h \
     code/sceneprojectiles.h \
     code/scenerope.h \
     code/scenesnowball.h \
     code/widgetcloth.h \
     code/widgetfountain.h \
+    code/widgetop.h \
     code/widgetprojectiles.h \
     code/widgetrope.h \
     code/widgetsnowball.h
@@ -61,6 +66,7 @@ FORMS += \
     forms/mainwindow.ui \
     forms/widgetcloth.ui \
     forms/widgetfountain.ui \
+    forms/widgetop.ui \
     forms/widgetprojectiles.ui \
     forms/widgetrope.ui \
     forms/widgetsnowball.ui
