@@ -301,8 +301,8 @@ void SceneOP::paint(const Camera& camera) {
     modelMat.scale(100, 1, 100);
     shader->setUniformValue("ModelMatrix", modelMat);
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
-    shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
-    shader->setUniformValue("matshin", 0.0f);
+    shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
+    shader->setUniformValue("matshin", 12.8f);
     glFuncs->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // draw sphere
@@ -391,8 +391,8 @@ void SceneOP::paint(const Camera& camera) {
         shader->setUniformValue("ModelMatrix", modelMat);
 
         shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
-        shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
-        shader->setUniformValue("matshin", 100.f);
+        shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
+        shader->setUniformValue("matshin", 12.8f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }
@@ -410,8 +410,8 @@ void SceneOP::paint(const Camera& camera) {
         shader->setUniformValue("ModelMatrix", modelMat);
 
         shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
-        shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
-        shader->setUniformValue("matshin", 100.f);
+        shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
+        shader->setUniformValue("matshin", 12.8f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }
@@ -791,7 +791,7 @@ void SceneOP::keyPressed(const QKeyEvent * e, const Camera& cam)
         }
     }
     if(keysPressed.contains(Qt::Key_A)){
-        Vec3 disp = Vec3(0.4f,0.f, 0.f);
+        Vec3 disp = Vec3(0.3f,0.f, 0.f);
         for(Particle* pi: fountainParticles){
             pi->pos += disp;
         }
@@ -802,7 +802,7 @@ void SceneOP::keyPressed(const QKeyEvent * e, const Camera& cam)
         fountainPos2 += disp;
     }
     if(keysPressed.contains(Qt::Key_D)){
-        Vec3 disp = Vec3(-0.4f,0.f, 0.f);
+        Vec3 disp = Vec3(-0.3f,0.f, 0.f);
         for(Particle* pi: fountainParticles){
             pi->pos += disp;
         }
