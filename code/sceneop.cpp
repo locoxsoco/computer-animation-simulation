@@ -484,7 +484,36 @@ void SceneOP::update() {
         int x = Random::get(-50, 50);
         int y = 0;
         int z = Random::get(-50, 50);
-        p->pos = Vec3(0,y,0) + fountainPos;
+        p->pos = Vec3(Random::get(-50, 50)/20.f,y,Random::get(-50, 50)/20.f) + fountainPos;
+        p->vel = Vec3(x/10.f,Random::get(28, 30),z/10.f);
+        p->prevPos = p->pos - timeStep*p->vel;
+    }
+    for (int i = 0; i < emitParticles; i++) {
+        Particle* p;
+        if (!deadParticles.empty()) {
+            // reuse one dead particle
+            p = deadParticles.front();
+            deadParticles.pop_front();
+        }
+        else {
+            // create new particle
+            p = new Particle();
+            system.addParticle(p);
+            fountainParticles2.push_back(p);
+
+            // don't forget to add particle to forces that affect it
+            fGravity->addInfluencedParticle(p);
+            fBlackhole->addInfluencedParticle(p);
+        }
+
+        p->color = Vec3(153/255.0, 217/255.0, 234/255.0);
+        p->radius = 1.0;
+        p->life = maxParticleLife;
+
+        int x = Random::get(-50, 50);
+        int y = 0;
+        int z = Random::get(-50, 50);
+        p->pos = Vec3(Random::get(-50, 50)/20.f,y,Random::get(-50, 50)/20.f) + fountainPos2;
         p->vel = Vec3(x/10.f,Random::get(28, 30),z/10.f);
         p->prevPos = p->pos - timeStep*p->vel;
     }
@@ -633,11 +662,21 @@ void SceneOP::update() {
             }
         }
     }
+    for (Particle* p : fountainParticles2) {
+        if (p->life > 0) {
+            p->life -= dt;
+            if (p->life < 0) {
+                deadParticles.push_back(p);
+            }
+        }
+    }
 
     fWind->setAcceleration(Vec3(0.f,5,-5));
     curr_step++;
-    if(curr_step%120==0){fountainPos=Vec3(Random::get(0, 50),1.f,Random::get(0, -50));}
-    if((curr_step+50)%120==0){fountainPos2=Vec3(Random::get(0, 50),1.f,Random::get(0, -50));}
+    if(curr_step%120==0){fountainPos=Vec3(Random::get(-80, 80),1.f,Random::get(-20, -80));}
+    else fountainPos+=Vec3(0.f,0.f,0.5f);
+    if((curr_step+50)%120==0){fountainPos2=Vec3(Random::get(-80, 80),1.f,Random::get(-20, -80));}
+    else fountainPos2+=Vec3(0.f,0.f,0.5f);
 }
 
 void SceneOP::mousePressed(const QMouseEvent* e, const Camera&)
@@ -672,6 +711,7 @@ void SceneOP::mouseMoved(const QMouseEvent* e, const Camera& cam)
     if (e->modifiers() & Qt::ControlModifier) {
         // move fountain
         fountainPos += disp;
+        fountainPos2 += disp;
     }
     else {
         // do something else: e.g. move colliders
@@ -724,4 +764,57 @@ void SceneOP::mouseMoved(const QMouseEvent* e, const Camera& cam)
             break;
         }
     }
+}
+
+void SceneOP::keyPressed(const QKeyEvent * e, const Camera& cam)
+{
+    //update();
+    keysPressed.insert(e->key());
+    if(keysPressed.contains(Qt::Key_W)){
+        Vec3 disp = Vec3(0.f,0.f,-0.4f);
+        colliderBoat.pos += disp;
+        colliderMast.pos += disp;
+        colliderSailwood1.pos += disp;
+        colliderSailwood2.pos += disp;
+        for(Particle* pi: cloth->particles){
+            pi->pos += disp;
+        }
+    }
+    if(keysPressed.contains(Qt::Key_S)){
+        Vec3 disp = Vec3(0.f,0.f, 0.4f);
+        colliderBoat.pos += disp;
+        colliderMast.pos += disp;
+        colliderSailwood1.pos += disp;
+        colliderSailwood2.pos += disp;
+        for(Particle* pi: cloth->particles){
+            pi->pos += disp;
+        }
+    }
+    if(keysPressed.contains(Qt::Key_A)){
+        Vec3 disp = Vec3(0.4f,0.f, 0.f);
+        for(Particle* pi: fountainParticles){
+            pi->pos += disp;
+        }
+        for(Particle* pi: fountainParticles2){
+            pi->pos += disp;
+        }
+        fountainPos += disp;
+        fountainPos2 += disp;
+    }
+    if(keysPressed.contains(Qt::Key_D)){
+        Vec3 disp = Vec3(-0.4f,0.f, 0.f);
+        for(Particle* pi: fountainParticles){
+            pi->pos += disp;
+        }
+        for(Particle* pi: fountainParticles2){
+            pi->pos += disp;
+        }
+        fountainPos += disp;
+        fountainPos2 += disp;
+    }
+
+}
+
+void SceneOP::keyReleased(const QKeyEvent * e, const Camera& cam){
+    keysPressed.remove(e->key());
 }

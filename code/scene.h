@@ -21,6 +21,7 @@ public:
     virtual void mouseMoved   (const QMouseEvent*, const Camera&) {};
     virtual void mouseReleased(const QMouseEvent*, const Camera&) {};
     virtual void keyPressed   (const QKeyEvent*,   const Camera&) {};
+    virtual void keyReleased   (const QKeyEvent*,   const Camera&) {};
 
     virtual void getSceneBounds(Vec3& bmin, Vec3& bmax) = 0;
     virtual unsigned int getNumParticles() { return 0; }

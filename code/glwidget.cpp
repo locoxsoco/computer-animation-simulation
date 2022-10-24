@@ -197,6 +197,11 @@ void GLWidget::keyPressEvent(QKeyEvent* e)
     scene->keyPressed(e, camera);
 }
 
+void GLWidget::keyReleaseEvent(QKeyEvent* e)
+{
+    scene->keyReleased(e, camera);
+}
+
 void GLWidget::doSimStep()
 {
     this->makeCurrent();

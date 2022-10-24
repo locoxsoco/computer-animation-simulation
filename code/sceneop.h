@@ -31,6 +31,8 @@ public:
     virtual void mousePressed(const QMouseEvent* e, const Camera& cam);
     virtual void mouseMoved(const QMouseEvent* e, const Camera& cam);
     virtual void mouseReleased(const QMouseEvent* e, const Camera& cam);
+    virtual void keyPressed(const QKeyEvent* e, const Camera& cam);
+    virtual void keyReleased(const QKeyEvent* e, const Camera& cam);
 
     virtual void getSceneBounds(Vec3& bmin, Vec3& bmax) {
         bmin = Vec3(-50, -10, -50);
@@ -90,6 +92,8 @@ protected:
     int curr_step=0;
     QMediaPlaylist* playlist;
     QMediaPlayer* player;
+
+    QSet<int> keysPressed;
 };
 
 #endif // SCENEOP_H
