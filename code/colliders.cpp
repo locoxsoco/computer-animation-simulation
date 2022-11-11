@@ -55,11 +55,11 @@ void ColliderSphere::resolveCollision(Particle* p, double kElastic, double kFric
 
     Vecd pointDiff = p->pos-sphereC;
     if(pointDiff.dot(pointDiff.transpose())<=sphereR*sphereR && !p->lock){
-        p->vel = p->vel - (1+kElastic)*planeN.dot(-pointDiff*0.8f)*planeN;
+        p->vel = p->vel - (1+kElastic)*planeN.dot(-pointDiff*0.7f)*planeN;
     }
 
     //for verlet integration
-    p->prevPos -= 0.9*(velElastic - (kFriction)*velT)*dt;
+    p->prevPos -= 0.7*(velElastic - (kFriction)*velT)*dt;
 }
 
 /*

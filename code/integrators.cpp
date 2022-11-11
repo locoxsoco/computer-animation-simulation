@@ -12,14 +12,13 @@ void IntegratorEuler::step(ParticleSystem &system, double dt) {
 void IntegratorSymplecticEuler::step(ParticleSystem &system, double dt) {
     // TODO
     Vecd p0 = system.getPositions();
+    Vecd v0 = system.getVelocities();
 
-    Vecd x0 = system.getState();
-    Vecd dx = system.getDerivative();
-    Vecd x1 = x0 + dt*dx;
-    system.setState(x1);
-    Vecd v1 = system.getVelocities();
+    Vecd v1 = v0 + dt*system.getAccelerations();
     Vecd p1 = p0 + dt*v1;
     system.setPositions(p1);
+    system.setVelocities(v1);
+    system.updateForces();
 }
 
 

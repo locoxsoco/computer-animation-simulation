@@ -70,7 +70,7 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
     // scene
     colliderFloor.setPlane(Vec3(0, 1, 0), 50);
     colliderSphere.setSphere(Vec3(100, 100, 100), 20);
-    colliderCube.setAABB(Vec3(0, 0, 0),Vec3(18, 24, 18));
+    colliderCube.setAABB(Vec3(0, 5, 0),Vec3(18, 24, 18));
     // create pool particles
     for(unsigned int i=0;i<poolSize.y();i++)
         for(unsigned int k=0;k<poolSize.z();k++)
@@ -370,8 +370,17 @@ float kernelFunction(float r, float h){
     return 0;
 }
 
+Vec3 kernelFunctionGradient(Vec3 dir, float r, float h){
+    if(0 <= r && r <= h){
+        float h2_r2 = h*h - r*r;
+        float h9 = h*h*h*h*h*h*h*h*h;
+        return dir*h2_r2*h2_r2*945.f/(32.f*3.14159192*h9);
+    }
+    return Vec3(0.f,0.f,0.f);
+}
+
 float pressureFunction(float pi, float p0){
-    float c = 0.00000001f;
+    float c = 3.f;
     return c*c*(pi-p0);
 }
 
@@ -390,7 +399,6 @@ void SceneSPHWaterCube::update() {
 
         // calculate density
         pi->density = 0.f;
-        pi->pressure = 0.f;
         for(unsigned int nr=0; nr<hash->querySize;nr++){
             Particle *pj = system.getParticles()[hash->queryIds[nr]];
             float k = kernelFunction((pj->pos-pi->pos).norm(),h);
@@ -410,9 +418,9 @@ void SceneSPHWaterCube::update() {
         for(unsigned int nr=0; nr<hash->querySize;nr++){
             Particle *pj = system.getParticles()[hash->queryIds[nr]];
 
-            Vec3 p_ij = -pj->mass*(pi->pos/(pi->density*pi->density) + pj->pos/(pj->density*pj->density));
-            float k = kernelFunction((pj->pos-pi->pos).norm(),h);
-            if(k) a_pressure += p_ij*k;
+            float p_ij = -pj->mass*(pi->pressure/(pi->density*pi->density) + pj->pressure/(pj->density*pj->density));
+            Vec3 k = kernelFunctionGradient(pj->pos-pi->pos,(pj->pos-pi->pos).norm(),h);
+            if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
         }
         fSPHSystem[i]->setAcceleration(a_pressure);
     }
@@ -426,14 +434,7 @@ void SceneSPHWaterCube::update() {
     // collisions
     for (int i=0; i<system.getNumParticles();i++) {
         Particle* pi = system.getParticles()[i];
-        // Floor collider
-        if (colliderFloor.testCollision(pi)) {
-            colliderFloor.resolveCollision(pi, bouncing, friction, dt);
-        }
-        // Sphere collider
-        if (colliderSphere.testCollision(pi)) {
-            colliderSphere.resolveCollision(pi, bouncing, friction, dt);
-        }
+
         // AABB collider
         if (colliderCube.testCollision(pi)) {
             colliderCube.resolveCollision(pi, bouncing, friction, dt);
