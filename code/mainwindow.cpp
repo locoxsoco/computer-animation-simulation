@@ -6,6 +6,7 @@
 #include "scenerope.h"
 #include "scenecloth.h"
 #include "sceneop.h"
+#include "scenesph_watercube.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSceneRope,   &QAction::triggered, this, [=](void){ changeScene(new SceneRope()); });
     connect(ui->actionSceneCloth,   &QAction::triggered, this, [=](void){ changeScene(new SceneCloth()); });
     connect(ui->actionGame,   &QAction::triggered, this, [=](void){ changeScene(new SceneOP()); });
+    connect(ui->actionSPHWaterCube,   &QAction::triggered, this, [=](void){ changeScene(new SceneSPHWaterCube()); });
 }
 
 MainWindow::~MainWindow()

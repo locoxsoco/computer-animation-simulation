@@ -275,7 +275,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuScene">
@@ -288,6 +288,7 @@
     <addaction name="actionSceneRope"/>
     <addaction name="actionSceneCloth"/>
     <addaction name="actionGame"/>
+    <addaction name="actionSPHWaterCube"/>
    </widget>
    <widget class="QMenu" name="menuCamera">
     <property name="title">
@@ -350,6 +351,11 @@
   <action name="actionGame">
    <property name="text">
     <string>SailBoat Scene</string>
+   </property>
+  </action>
+  <action name="actionSPHWaterCube">
+   <property name="text">
+    <string>SPH Water Cube</string>
    </property>
   </action>
  </widget>

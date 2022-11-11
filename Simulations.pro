@@ -25,12 +25,14 @@ SOURCES += \
     code/sceneprojectiles.cpp \
     code/scenerope.cpp \
     code/scenesnowball.cpp \
+    code/scenesph_watercube.cpp \
     code/widgetcloth.cpp \
     code/widgetfountain.cpp \
     code/widgetop.cpp \
     code/widgetprojectiles.cpp \
     code/widgetrope.cpp \
-    code/widgetsnowball.cpp
+    code/widgetsnowball.cpp \
+    code/widgetsph_watercube.cpp
 
 HEADERS += \
     code/camera.h \
@@ -55,12 +57,14 @@ HEADERS += \
     code/sceneprojectiles.h \
     code/scenerope.h \
     code/scenesnowball.h \
+    code/scenesph_watercube.h \
     code/widgetcloth.h \
     code/widgetfountain.h \
     code/widgetop.h \
     code/widgetprojectiles.h \
     code/widgetrope.h \
-    code/widgetsnowball.h
+    code/widgetsnowball.h \
+    code/widgetsph_watercube.h
 
 FORMS += \
     forms/mainwindow.ui \
@@ -69,6 +73,7 @@ FORMS += \
     forms/widgetop.ui \
     forms/widgetprojectiles.ui \
     forms/widgetrope.ui \
-    forms/widgetsnowball.ui
+    forms/widgetsnowball.ui \
+    forms/widgetsph_watercube.ui
 
 RESOURCES += shaders.qrc

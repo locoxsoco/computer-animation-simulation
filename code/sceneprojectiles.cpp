@@ -448,6 +448,7 @@ void SceneProjectiles::paint(const Camera& camera) {
     shaderPhong->setUniformValue("matdiff", 0.7f, 0.7f, 0.7f);
     shaderPhong->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
     shaderPhong->setUniformValue("matshin", 0.0f);
+    shaderPhong->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // draw cube

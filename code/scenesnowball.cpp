@@ -38,6 +38,7 @@ void SceneSnowball::initialize(double dt, double bo, double fr, unsigned int dra
 
     // create big sphere VAOs
     Model sphereBig = Model::createIcosphereNI(5);
+    vaoSphereBigS = glutils::createVAO(shader, &sphereBig);
     numFacesSphereBigS = sphereBig.numFaces();
     glutils::checkGLError();
 
@@ -166,26 +167,8 @@ void SceneSnowball::paint(const Camera& camera) {
         lightPosCam[i] = camView * lightPosWorld[i];
     }
 
+
     QMatrix4x4 modelMat;
-
-    // draw big sphere
-    /*shader_alpha->bind();
-    shader_alpha->setUniformValue("ProjMatrix", camProj);
-    shader_alpha->setUniformValue("ViewMatrix", camView);
-    vaoSphereBigS->bind();
-    modelMat = QMatrix4x4();
-    modelMat.translate(colliderSnowball.sphereC[0],colliderSnowball.sphereC[1],colliderSnowball.sphereC[2]);
-    modelMat.scale(colliderSnowball.sphereR);
-    shader_alpha->setUniformValue("ModelMatrix", modelMat);
-    shader_alpha->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
-    shader_alpha->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
-    shader_alpha->setUniformValue("matshin", 0.f);
-    shader_alpha->setUniformValue("numLights", numLights);
-    shader_alpha->setUniformValueArray("lightPos", lightPosCam, numLights);
-    shader_alpha->setUniformValueArray("lightColor", lightColor, numLights);
-    glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereBigS, GL_UNSIGNED_INT, 0);
-    shader_alpha->release();*/
-
     shader->bind();
     shader->setUniformValue("ProjMatrix", camProj);
     shader->setUniformValue("ViewMatrix", camView);
@@ -196,7 +179,6 @@ void SceneSnowball::paint(const Camera& camera) {
     shader->setUniformValueArray("lightColor", lightColor, numLights);
 
     // draw blackhole
-    //shader->bind();
     vaoSphereS->bind();
     modelMat = QMatrix4x4();
     modelMat.translate(fBlackhole->getPosition().x(),fBlackhole->getPosition().y(),fBlackhole->getPosition().z());
@@ -205,6 +187,7 @@ void SceneSnowball::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", GLfloat(0.f), GLfloat(0.f), GLfloat(0.f));
     shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
     shader->setUniformValue("matshin", 100.f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
 
 
@@ -223,9 +206,22 @@ void SceneSnowball::paint(const Camera& camera) {
         shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
         shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
         shader->setUniformValue("matshin", 100.f);
+        shader->setUniformValue("alpha", 1.0f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }
+
+    // draw big sphere
+    vaoSphereBigS->bind();
+    modelMat = QMatrix4x4();
+    modelMat.translate(colliderSnowball.sphereC[0],colliderSnowball.sphereC[1],colliderSnowball.sphereC[2]);
+    modelMat.scale(colliderSnowball.sphereR);
+    shader->setUniformValue("ModelMatrix", modelMat);
+    shader->setUniformValue("matdiff", GLfloat(0.f), GLfloat(0.f), GLfloat(0.f));
+    shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
+    shader->setUniformValue("matshin", 100.f);
+    shader->setUniformValue("alpha", 0.1f);
+    glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereBigS, GL_UNSIGNED_INT, 0);
 
     shader->release();
 }

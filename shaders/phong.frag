@@ -6,7 +6,7 @@ in vec3  fnormal;
 uniform vec3  matdiff;
 uniform vec3  matspec;
 uniform float matshin;
-uniform float alpha = 1;
+uniform float alpha;
 
 const vec3 ambientLight = vec3(0.2, 0.2, 0.2);
 const int MAX_LIGHTS = 4;

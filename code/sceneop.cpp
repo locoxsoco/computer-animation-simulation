@@ -172,6 +172,7 @@ void SceneOP::reset(double dt, double bo, double fr, unsigned int dragt)
     system.addForce(fBlackhole);
     system.addForce(fWind);
 
+    delete(cloth);
     cloth = new Sail(numParticlesX,numParticlesY,Vec3(-numParticlesX/2,65,-numParticlesY/2));
     for(int i=0;i<cloth->particles.length();i++){
         system.addParticle(cloth->particles[i]);
@@ -232,7 +233,7 @@ void SceneOP::reset(double dt, double bo, double fr, unsigned int dragt)
     colliderSailwood2.setAABB(Vec3(0, 25, -20),Vec3(30, 0.5, 0.5));
 
     //playlist = new QMediaPlaylist;
-    playlist->addMedia(QUrl::fromLocalFile("C:/MIRI/2022-2/computer-animation-simulation/sounds/overtaken.mp3"));
+    playlist->addMedia(QUrl::fromLocalFile("D:/MIRI/2022-2/SimulationsBase/computer-animation-simulation/sounds/overtaken.mp3"));
     playlist->setPlaybackMode(QMediaPlaylist::PlaybackMode::Loop);
     player->setPlaylist(playlist);
     player->setVolume(10);
@@ -303,6 +304,7 @@ void SceneOP::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
     shader->setUniformValue("matshin", 12.8f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // draw sphere
@@ -314,6 +316,7 @@ void SceneOP::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
     shader->setUniformValue("matshin", 0.f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereBigS, GL_UNSIGNED_INT, 0);
 
     // draw blackhole
@@ -325,6 +328,7 @@ void SceneOP::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", GLfloat(0.f), GLfloat(0.f), GLfloat(0.f));
     shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
     shader->setUniformValue("matshin", 100.f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
 
     // draw aabb
@@ -336,6 +340,7 @@ void SceneOP::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", 0.4f, 0.2368f, 0.1036f);
     shader->setUniformValue("matspec", 0.774597f, 0.458561f, 0.200621f);
     shader->setUniformValue("matshin", 76.8f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesCube, GL_UNSIGNED_INT, 0);
 
     modelMat = QMatrix4x4();
@@ -373,6 +378,7 @@ void SceneOP::paint(const Camera& camera) {
             shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
             shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
             shader->setUniformValue("matshin", 100.f);
+            shader->setUniformValue("alpha", 1.0f);
 
             glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
         }
@@ -393,6 +399,7 @@ void SceneOP::paint(const Camera& camera) {
         shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
         shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
         shader->setUniformValue("matshin", 12.8f);
+        shader->setUniformValue("alpha", 1.0f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }
@@ -412,6 +419,7 @@ void SceneOP::paint(const Camera& camera) {
         shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
         shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
         shader->setUniformValue("matshin", 12.8f);
+        shader->setUniformValue("alpha", 1.0f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }

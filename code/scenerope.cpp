@@ -178,6 +178,7 @@ void SceneRope::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
     shader->setUniformValue("matshin", 0.0f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // draw sphere
@@ -189,6 +190,7 @@ void SceneRope::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
     shader->setUniformValue("matshin", 0.f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereBigS, GL_UNSIGNED_INT, 0);
 
     // draw blackhole
@@ -200,6 +202,7 @@ void SceneRope::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", GLfloat(0.f), GLfloat(0.f), GLfloat(0.f));
     shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
     shader->setUniformValue("matshin", 100.f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
 
     // draw aabb
@@ -211,6 +214,7 @@ void SceneRope::paint(const Camera& camera) {
     shader->setUniformValue("matdiff", 0.8f, 0.8f, 0.8f);
     shader->setUniformValue("matspec", 0.0f, 0.0f, 0.0f);
     shader->setUniformValue("matshin", 0.f);
+    shader->setUniformValue("alpha", 1.0f);
     glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesCube, GL_UNSIGNED_INT, 0);
 
 
@@ -229,6 +233,7 @@ void SceneRope::paint(const Camera& camera) {
         shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
         shader->setUniformValue("matspec", 1.0f, 1.0f, 1.0f);
         shader->setUniformValue("matshin", 100.f);
+        shader->setUniformValue("alpha", 1.0f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }
