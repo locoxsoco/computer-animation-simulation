@@ -30,16 +30,16 @@ int WidgetSPHWaterCube::getMovableObjectId() const {
     return ui->radioButton->isChecked()?0:ui->radioButton_2->isChecked()?1:ui->radioButton_3->isChecked()?2:3;
 }
 
-double WidgetSPHWaterCube::getKe() const {
-    return ui->spinBox_ke->value();
+double WidgetSPHWaterCube::getHReduction() const {
+    return ui->spinBox_h_reduction->value();
 }
 
-double WidgetSPHWaterCube::getKd() const {
-    return ui->spinBox_kd->value();
+double WidgetSPHWaterCube::getRestDensity() const {
+    return ui->spinBox_rest_density->value();
 }
 
-int WidgetSPHWaterCube::getRelaxationSteps() const {
-    return ui->spinBox_relaxation_steps->value();
+double WidgetSPHWaterCube::getC() const {
+    return ui->spinBox_c->value();
 }
 
 bool WidgetSPHWaterCube::getRenderParticles() const {

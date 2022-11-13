@@ -6,7 +6,7 @@
 #include <QOpenGLBuffer>
 #include <list>
 #include "scene.h"
-#include "widgetop.h"
+#include "widgetsph_watercube.h"
 #include "particlesystem.h"
 #include "integrators.h"
 #include "colliders.h"
@@ -38,12 +38,13 @@ public:
     virtual unsigned int getNumParticles() { return system.getNumParticles(); }
 
     virtual QWidget* sceneUI() { return widget; }
+    double pressureFunction(double pi, double p0);
 
 public slots:
     void updateSimParams();
 
 protected:
-    WidgetOP* widget = nullptr;
+    WidgetSPHWaterCube* widget = nullptr;
 
     QOpenGLShaderProgram* shader = nullptr;
     QOpenGLVertexArrayObject* vaoSphereS = nullptr, *vaoSphereBigS = nullptr, *vaoCube = nullptr,*vaoMesh=nullptr;
@@ -60,7 +61,7 @@ protected:
     ForceConstAcceleration *fWind = nullptr;
     ColliderPlane colliderFloor;
     ColliderSphere colliderSphere;
-    ColliderInnerAABB colliderCube;
+    ColliderLambdaInnerAABB colliderCube;
 
     double emitRate;
     double maxParticleLife;
@@ -68,6 +69,7 @@ protected:
     QVector<Particle*> poolParticles;
     QVector<Particle*> dropParticles;
     float water_radius=1.f;
+    double c=1;
     Vec3i poolSize = Vec3i(18,5,18);
     Vec3i dropSize = Vec3i(18,18,18);
     int mouseX, mouseY;

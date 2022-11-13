@@ -47,12 +47,12 @@ public:
     Vec3 pos, scale;
 };
 
-class ColliderInnerAABB: public Collider
+class ColliderLambdaInnerAABB: public Collider
 {
 public:
-    ColliderInnerAABB() { pos = Vec3(0,0,0); scale = Vec3(0,0,0); }
-    ColliderInnerAABB(const Vec3& p, const Vec3& s) : pos(p), scale(s) {}
-    virtual ~ColliderInnerAABB() {}
+    ColliderLambdaInnerAABB() { pos = Vec3(0,0,0); scale = Vec3(0,0,0); }
+    ColliderLambdaInnerAABB(const Vec3& p, const Vec3& s) : pos(p), scale(s) {}
+    virtual ~ColliderLambdaInnerAABB() {}
 
     void setAABB(const Vec3& p, const Vec3& s) { this->pos = p; this->scale = s; }
 
@@ -60,6 +60,8 @@ public:
     virtual void resolveCollision(Particle* p, double kElastic, double kFriction, double dt) const;
 
     Vec3 pos, scale;
+
+    void calcLambda(Particle* p, Vec3 (&planesN)[6], double (&planesD)[6], double &lambda, unsigned int &idx) const;
 };
 
 class ColliderSphere : public Collider
