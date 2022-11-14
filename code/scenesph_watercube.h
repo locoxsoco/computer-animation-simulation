@@ -15,6 +15,7 @@
 enum SPHMethod {
     FullyCompressible=0,
     WeaklyCompressible=1,
+    IterativeWeaklyCompressible=2,
 };
 
 class SceneSPHWaterCube : public Scene

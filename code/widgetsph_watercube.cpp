@@ -3,7 +3,8 @@
 
 enum comboBoxSPHMethod {
     FullyCompressibleMethod = 0,
-    WeaklyCompressibleMethod = 1
+    WeaklyCompressibleMethod = 1,
+    IterativeWeaklyCompressibleMethod = 2,
 };
 
 void WidgetSPHWaterCube::setDefaultParameters(){
@@ -13,8 +14,12 @@ void WidgetSPHWaterCube::setDefaultParameters(){
         ui->spinBox_c->setValue(300.f);
         ui->spinBox_k->setValue(20.f);
         ui->spinBox_kinematic_viscosity->setValue(0.f);
-        ui->spinBox_mu->setValue(0.f);
-    }else if(ui->comboBox->currentIndex() == comboBoxSPHMethod::WeaklyCompressibleMethod){
+    }else if(ui->comboBox->currentIndex() == comboBoxSPHMethod::WeaklyCompressibleMethod ||ui->comboBox->currentIndex() == comboBoxSPHMethod::IterativeWeaklyCompressibleMethod  ){
+        ui->spinBox_h_reduction->setValue(0.7f);
+        ui->spinBox_rest_density->setValue(0.004000f);
+        ui->spinBox_c->setValue(300.f);
+        ui->spinBox_k->setValue(19.f);
+        ui->spinBox_kinematic_viscosity->setValue(0.f);
 
     }
 }
@@ -67,10 +72,6 @@ double WidgetSPHWaterCube::getK() const {
 
 double WidgetSPHWaterCube::getKinematicViscosity() const {
     return ui->spinBox_kinematic_viscosity->value();
-}
-
-double WidgetSPHWaterCube::getMu() const {
-    return ui->spinBox_mu->value();
 }
 
 int WidgetSPHWaterCube::getSPHMethod() const {
