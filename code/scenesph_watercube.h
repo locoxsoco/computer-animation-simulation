@@ -12,6 +12,11 @@
 #include "colliders.h"
 #include "hash.h"
 
+enum SPHMethod {
+    FullyCompressible=0,
+    WeaklyCompressible=1,
+};
+
 class SceneSPHWaterCube : public Scene
 {
     Q_OBJECT
@@ -38,7 +43,8 @@ public:
     virtual unsigned int getNumParticles() { return system.getNumParticles(); }
 
     virtual QWidget* sceneUI() { return widget; }
-    double pressureFunction(double pi, double p0);
+    double getPressureFunctionSound(double pi, double p0);
+    double getPressureFunctionStateEquation(double pi, double p0);
 
 public slots:
     void updateSimParams();
@@ -54,7 +60,9 @@ protected:
 
     IntegratorSymplecticEuler integrator;
     ParticleSystem system;
-    QVector<ForceConstAcceleration*> fSPHSystem;
+    QVector<ForceSPH*> fSPHSystem;
+    //QVector<ForceSPH*> fSPHViscosity;
+    //QVector<ForceSPH*> fSPHPressure;
     std::list<Particle*> deadParticles;
     ForceConstAcceleration* fGravity;
     ForceBlackhole* fBlackhole;
@@ -68,10 +76,12 @@ protected:
 
     QVector<Particle*> poolParticles;
     QVector<Particle*> dropParticles;
+    QVector<Particle*> boundaryParticles;
     float water_radius=1.f;
-    double c=1;
+    double c=0.f,k=0.f;
     Vec3i poolSize = Vec3i(18,5,18);
     Vec3i dropSize = Vec3i(18,18,18);
+    Vec3 boundarySize = Vec3(18,24,18);
     int mouseX, mouseY;
 
     Hash *hash;

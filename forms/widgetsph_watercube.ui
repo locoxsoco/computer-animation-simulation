@@ -169,13 +169,13 @@
       </size>
      </property>
      <property name="title">
-      <string>SPH</string>
+      <string>SPH Method:</string>
      </property>
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
+        <y>60</y>
         <width>71</width>
         <height>20</height>
        </rect>
@@ -188,7 +188,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>60</y>
+        <y>90</y>
         <width>81</width>
         <height>20</height>
        </rect>
@@ -201,20 +201,20 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>120</y>
         <width>91</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>c</string>
+       <string>Speed of sound</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="spinBox_h_reduction">
       <property name="geometry">
        <rect>
-        <x>100</x>
-        <y>30</y>
+        <x>130</x>
+        <y>60</y>
         <width>60</width>
         <height>22</height>
        </rect>
@@ -232,8 +232,8 @@
      <widget class="QDoubleSpinBox" name="spinBox_rest_density">
       <property name="geometry">
        <rect>
-        <x>100</x>
-        <y>60</y>
+        <x>130</x>
+        <y>90</y>
         <width>60</width>
         <height>22</height>
        </rect>
@@ -251,72 +251,11 @@
        <double>0.002387000000000</double>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_particles">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>120</y>
-        <width>141</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Render Particles</string>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_cloth">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>150</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Render Cloth</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_release_lock">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>210</y>
-        <width>160</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Release fixed particles</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_selfcollisions">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>180</y>
-        <width>141</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Check Self-Collisions</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
      <widget class="QDoubleSpinBox" name="spinBox_c">
       <property name="geometry">
        <rect>
-        <x>100</x>
-        <y>90</y>
+        <x>130</x>
+        <y>120</y>
         <width>60</width>
         <height>22</height>
        </rect>
@@ -329,6 +268,98 @@
       </property>
       <property name="value">
        <double>20.047570000000000</double>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>171</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Fully Compressible Fluid</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Weakly Compressible Fluid</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>111</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Kinematic Viscosity</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spinBox_kinematic_viscosity">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>180</y>
+        <width>60</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>49</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Mu</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spinBox_mu">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>210</y>
+        <width>60</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>49</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Stiffness</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="spinBox_k">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>150</y>
+        <width>60</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="value">
+       <double>20.000000000000000</double>
       </property>
      </widget>
     </widget>

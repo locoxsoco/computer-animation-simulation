@@ -17,9 +17,13 @@ public:
     double getGravity()    const;
     int getBlackholeIntensity()    const;
     int getMovableObjectId() const;
+    int getSPHMethod() const;
     double getHReduction() const;
     double getRestDensity() const;
     double getC() const;
+    double getK() const;
+    double getKinematicViscosity() const;
+    double getMu() const;
     bool getRenderParticles() const;
     bool getRenderCloth() const;
     bool getSelfCollisions() const;

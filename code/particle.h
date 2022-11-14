@@ -15,6 +15,7 @@ public:
     double mass;
     float density;
     float pressure;
+    int type = 0; // 1 is boundary, else 0
     double radius = 1.0;
     double life   = 0.0;
     Vec3 color    = Vec3(1, 1, 1);

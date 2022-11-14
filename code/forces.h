@@ -50,6 +50,22 @@ protected:
     Vec3 acceleration;
 };
 
+class ForceSPH : public Force
+{
+public:
+    ForceSPH() { acceleration = Vec3(0,0,0); }
+    ForceSPH(const Vec3& a) { acceleration = a; }
+    virtual ~ForceSPH() {}
+
+    virtual void apply();
+
+    void setForce(const Vec3& a) { acceleration = a; }
+    Vec3 getForce() const { return acceleration; }
+
+protected:
+    Vec3 acceleration;
+};
+
 
 class ForceDragLinear : public Force
 {

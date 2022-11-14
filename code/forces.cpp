@@ -9,6 +9,14 @@ void ForceConstAcceleration::apply() {
     }
 }
 
+void ForceSPH::apply() {
+    for (Particle* p : particles) {
+        // TODO
+        if(p->lock) continue;
+        p->force += getForce();
+    }
+}
+
 void ForceDragLinear::apply() {
     for (Particle* p : particles) {
         // TODO

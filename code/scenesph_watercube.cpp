@@ -70,11 +70,126 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
     // scene
     colliderFloor.setPlane(Vec3(0, 1, 0), 50);
     colliderSphere.setSphere(Vec3(100, 100, 100), 20);
-    colliderCube.setAABB(Vec3(0, 5, 0),Vec3(18, 24, 18));
+    colliderCube.setAABB(Vec3(0, 5, 0),boundarySize);
+
+    // create boundary particles
+    for(int i=0;i<boundarySize.y();i++)
+        for(int k=0;k<boundarySize.z();k++){
+            //plane -x
+            Vec3 npos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        0.f,
+                        i*2,
+                        k*2
+                        );
+            Particle *np =new Particle(npos);
+            np->color = Vec3(1.f, 1.f, 1.f);
+            np->mass = 0.01;
+            np->type = 1;
+            boundaryParticles.push_back(np);
+            //system.addParticle(np);
+            //plane +x
+            Vec3 ppos=Vec3(
+                        colliderCube.pos.x()+colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        0.f,
+                        i*2,
+                        k*2
+                        );
+            Particle *pp =new Particle(ppos);
+            pp->color = Vec3(1.f, 1.f, 1.f);
+            pp->mass = 0.01;
+            pp->type = 1;
+            boundaryParticles.push_back(pp);
+            //system.addParticle(pp);
+        }
+    for(int j=0;j<boundarySize.x();j++)
+        for(int k=0;k<boundarySize.z();k++){
+            //plane -y
+            Vec3 npos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        0.f,
+                        k*2
+                        );
+            Particle *np =new Particle(npos);
+            np->color = Vec3(1.f, 1.f, 1.f);
+            np->mass = 0.01;
+            np->type = 1;
+            boundaryParticles.push_back(np);
+            //system.addParticle(np);
+            //plane +y
+            Vec3 ppos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()+colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        0.f,
+                        k*2
+                        );
+            Particle *pp =new Particle(ppos);
+            pp->color = Vec3(1.f, 1.f, 1.f);
+            pp->mass = 0.01;
+            pp->type = 1;
+            boundaryParticles.push_back(pp);
+            //system.addParticle(pp);
+        }
+    for(int i=0;i<boundarySize.y();i++)
+        for(int j=0;j<boundarySize.x();j++){
+            //plane -z
+            Vec3 npos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        i*2,
+                        0.f
+                        );
+            Particle *np =new Particle(npos);
+            np->color = Vec3(1.f, 1.f, 1.f);
+            np->mass = 0.01;
+            np->type = 1;
+            boundaryParticles.push_back(np);
+            //system.addParticle(np);
+            //plane +z
+            Vec3 ppos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()+colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        i*2,
+                        0.f
+                        );
+            Particle *pp =new Particle(ppos);
+            pp->color = Vec3(1.f, 1.f, 1.f);
+            pp->mass = 0.01;
+            pp->type = 1;
+            boundaryParticles.push_back(pp);
+            //system.addParticle(pp);
+        }
+
+
     // create pool particles
-    for(unsigned int i=0;i<poolSize.y();i++)
-        for(unsigned int k=0;k<poolSize.z();k++)
-            for(unsigned int j=0;j<poolSize.x();j++){
+    for(unsigned int i=1;i<poolSize.y();i++)
+        for(unsigned int k=1;k<poolSize.z();k++)
+            for(unsigned int j=1;j<poolSize.x();j++){
                 Vec3 pos=Vec3(
                             colliderCube.pos.x()-colliderCube.scale.x(),
                             colliderCube.pos.y()-colliderCube.scale.y(),
@@ -84,11 +199,6 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
                             j*2,
                             i*2,
                             k*2
-                            ) +
-                        Vec3(
-                            1.f,
-                            1.f,
-                            1.f
                             );
                 Particle *p =new Particle(pos);
                 p->color = Vec3(153/255.0, 217/255.0, 234/255.0);
@@ -100,7 +210,7 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
                 fGravity->addInfluencedParticle(p);
                 fBlackhole->addInfluencedParticle(p);
                 // Adding SPH forces
-                ForceConstAcceleration* fSPH = new ForceConstAcceleration();
+                ForceSPH* fSPH = new ForceSPH();
                 fSPH->addInfluencedParticle(p);
                 fSPHSystem.push_back(fSPH);
                 system.addForce(fSPH);
@@ -131,7 +241,7 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
                     fGravity->addInfluencedParticle(p);
                     fBlackhole->addInfluencedParticle(p);
                     // Adding SPH forces
-                    ForceConstAcceleration* fSPH = new ForceConstAcceleration();
+                    ForceSPH* fSPH = new ForceSPH();
                     fSPH->addInfluencedParticle(p);
                     fSPHSystem.push_back(fSPH);
                     system.addForce(fSPH);
@@ -153,7 +263,7 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
 
     colliderFloor.setPlane(Vec3(0, 1, 0), 50);
     colliderSphere.setSphere(Vec3(100, 100, 100), 20);
-    colliderCube.setAABB(Vec3(0, 5, 0),Vec3(18, 24, 18));
+    colliderCube.setAABB(Vec3(0, 5, 0),boundarySize);
 
     // update values from UI
     updateSimParams();
@@ -175,10 +285,123 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
     poolParticles.clear();
     dropParticles.clear();
 
+    // create boundary particles
+    for(int i=0;i<boundarySize.y();i++)
+        for(int k=0;k<boundarySize.z();k++){
+            //plane -x
+            Vec3 npos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        0.f,
+                        i*2,
+                        k*2
+                        );
+            Particle *np =new Particle(npos);
+            np->color = Vec3(1.f, 1.f, 1.f);
+            np->mass = 0.01;
+            np->type = 1;
+            boundaryParticles.push_back(np);
+            //system.addParticle(np);
+            //plane +x
+            Vec3 ppos=Vec3(
+                        colliderCube.pos.x()+colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        0.f,
+                        i*2,
+                        k*2
+                        );
+            Particle *pp =new Particle(ppos);
+            pp->color = Vec3(1.f, 1.f, 1.f);
+            pp->mass = 0.01;
+            pp->type = 1;
+            boundaryParticles.push_back(pp);
+            //system.addParticle(pp);
+        }
+    for(int j=0;j<boundarySize.x();j++)
+        for(int k=0;k<boundarySize.z();k++){
+            //plane -y
+            Vec3 npos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        0.f,
+                        k*2
+                        );
+            Particle *np =new Particle(npos);
+            np->color = Vec3(1.f, 1.f, 1.f);
+            np->mass = 0.01;
+            np->type = 1;
+            boundaryParticles.push_back(np);
+            //system.addParticle(np);
+            //plane +y
+            Vec3 ppos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()+colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        0.f,
+                        k*2
+                        );
+            Particle *pp =new Particle(ppos);
+            pp->color = Vec3(1.f, 1.f, 1.f);
+            pp->mass = 0.01;
+            pp->type = 1;
+            boundaryParticles.push_back(pp);
+            //system.addParticle(pp);
+        }
+    for(int i=0;i<boundarySize.y();i++)
+        for(int j=0;j<boundarySize.x();j++){
+            //plane -z
+            Vec3 npos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()-colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        i*2,
+                        0.f
+                        );
+            Particle *np =new Particle(npos);
+            np->color = Vec3(1.f, 1.f, 1.f);
+            np->mass = 0.01;
+            np->type = 1;
+            boundaryParticles.push_back(np);
+            //system.addParticle(np);
+            //plane +z
+            Vec3 ppos=Vec3(
+                        colliderCube.pos.x()-colliderCube.scale.x(),
+                        colliderCube.pos.y()-colliderCube.scale.y(),
+                        colliderCube.pos.z()+colliderCube.scale.z()
+                        ) +
+                    Vec3(
+                        j*2,
+                        i*2,
+                        0.f
+                        );
+            Particle *pp =new Particle(ppos);
+            pp->color = Vec3(1.f, 1.f, 1.f);
+            pp->mass = 0.01;
+            pp->type = 1;
+            boundaryParticles.push_back(pp);
+            //system.addParticle(pp);
+        }
+
     // create pool particles
-    for(unsigned int i=0;i<poolSize.y();i++)
-        for(unsigned int k=0;k<poolSize.z();k++)
-            for(unsigned int j=0;j<poolSize.x();j++){
+    for(unsigned int i=1;i<poolSize.y();i++)
+        for(unsigned int k=1;k<poolSize.z();k++)
+            for(unsigned int j=1;j<poolSize.x();j++){
                 Vec3 pos=Vec3(
                             colliderCube.pos.x()-colliderCube.scale.x(),
                             colliderCube.pos.y()-colliderCube.scale.y(),
@@ -188,11 +411,6 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
                             j*2,
                             i*2,
                             k*2
-                            ) +
-                        Vec3(
-                            1.f,
-                            1.f,
-                            1.f
                             );
                 Particle *p =new Particle(pos);
                 p->color = Vec3(153/255.0, 217/255.0, 234/255.0);
@@ -204,7 +422,7 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
                 fGravity->addInfluencedParticle(p);
                 fBlackhole->addInfluencedParticle(p);
                 // Adding SPH forces
-                ForceConstAcceleration* fSPH = new ForceConstAcceleration();
+                ForceSPH* fSPH = new ForceSPH();
                 fSPH->addInfluencedParticle(p);
                 fSPHSystem.push_back(fSPH);
                 system.addForce(fSPH);
@@ -236,7 +454,7 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
                     fGravity->addInfluencedParticle(p);
                     fBlackhole->addInfluencedParticle(p);
                     // Adding SPH forces
-                    ForceConstAcceleration* fSPH = new ForceConstAcceleration();
+                    ForceSPH* fSPH = new ForceSPH();
                     fSPH->addInfluencedParticle(p);
                     fSPHSystem.push_back(fSPH);
                     system.addForce(fSPH);
@@ -328,7 +546,7 @@ void SceneSPHWaterCube::paint(const Camera& camera) {
 
     // draw the different spheres
     vaoSphereS->bind();
-    for (const Particle* particle : system.getParticles()) {
+    for (const Particle* particle : poolParticles) {
         Vec3   p = particle->pos;
         Vec3   c = particle->color;
         double r = particle->radius;
@@ -342,6 +560,40 @@ void SceneSPHWaterCube::paint(const Camera& camera) {
         shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
         shader->setUniformValue("matshin", 12.8f);
         shader->setUniformValue("alpha", 1.0f);
+
+        glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
+    }
+    for (const Particle* particle : dropParticles) {
+        Vec3   p = particle->pos;
+        Vec3   c = particle->color;
+        double r = particle->radius;
+
+        modelMat = QMatrix4x4();
+        modelMat.translate(p[0], p[1], p[2]);
+        modelMat.scale(r);
+        shader->setUniformValue("ModelMatrix", modelMat);
+
+        shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
+        shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
+        shader->setUniformValue("matshin", 12.8f);
+        shader->setUniformValue("alpha", 1.0f);
+
+        glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
+    }
+    for (const Particle* particle : boundaryParticles) {
+        Vec3   p = particle->pos;
+        Vec3   c = particle->color;
+        double r = particle->radius;
+
+        modelMat = QMatrix4x4();
+        modelMat.translate(p[0], p[1], p[2]);
+        modelMat.scale(r);
+        shader->setUniformValue("ModelMatrix", modelMat);
+
+        shader->setUniformValue("matdiff", GLfloat(c[0]), GLfloat(c[1]), GLfloat(c[2]));
+        shader->setUniformValue("matspec", 0.297254f, 0.30829f, 0.306678f);
+        shader->setUniformValue("matshin", 12.8f);
+        shader->setUniformValue("alpha", 0.1f);
 
         glFuncs->glDrawElements(GL_TRIANGLES, 3*numFacesSphereS, GL_UNSIGNED_INT, 0);
     }
@@ -361,9 +613,9 @@ void SceneSPHWaterCube::paint(const Camera& camera) {
     shader->release();
 }
 
-double kernelFunctionPoly(Vec3 r, double h){
+double getKernelFunctionPoly(Vec3 r, double h){
     double r_norm = r.norm();
-    if(0 <= r_norm && r_norm <= h){
+    if(0.f <= r_norm && r_norm <= h){
         double h2_r2 = h*h - r_norm*r_norm;
         double h9 = h*h*h*h*h*h*h*h*h;
         return 315.f/(64.f*3.14159192*h9)*h2_r2*h2_r2*h2_r2;
@@ -371,9 +623,9 @@ double kernelFunctionPoly(Vec3 r, double h){
     return 0;
 }
 
-Vec3 kernelFunctionGradientPoly(Vec3 r, double h){
+Vec3 getKernelFunctionGradientPoly(Vec3 r, double h){
     double r_norm = r.norm();
-    if(0 <= r_norm && r_norm <= h){
+    if(0.f <= r_norm && r_norm <= h){
         double h2_r2 = h*h - r_norm*r_norm;
         double h9 = h*h*h*h*h*h*h*h*h;
         return -r*945.f/(32.f*3.14159192*h9)*h2_r2*h2_r2;
@@ -381,9 +633,9 @@ Vec3 kernelFunctionGradientPoly(Vec3 r, double h){
     return Vec3(0.f,0.f,0.f);
 }
 
-double kernelFunctionSpiky(Vec3 r, double h){
+double getKernelFunctionSpiky(Vec3 r, double h){
     double r_norm = r.norm();
-    if(0 <= r_norm && r_norm <= h){
+    if(0.f <= r_norm && r_norm <= h){
         double h_r = h - r_norm;
         double h6 = h*h*h*h*h*h;
         return 15.f/(3.14159192*h6)*h_r*h_r*h_r;
@@ -391,9 +643,9 @@ double kernelFunctionSpiky(Vec3 r, double h){
     return 0;
 }
 
-Vec3 kernelFunctionGradientSpiky(Vec3 r, double h){
+Vec3 getKernelFunctionGradientSpiky(Vec3 r, double h){
     double r_norm = r.norm();
-    if(0 <= r_norm && r_norm <= h){
+    if(0.f <= r_norm && r_norm <= h){
         double h_r = h - r_norm;
         double h6 = h*h*h*h*h*h;
         //Vec3 value =  -r*45.f/(3.14159192*h6*r_norm)*h_r*h_r;
@@ -403,56 +655,165 @@ Vec3 kernelFunctionGradientSpiky(Vec3 r, double h){
     return Vec3(0.f,0.f,0.f);
 }
 
-double SceneSPHWaterCube::pressureFunction(double pi, double p0){
-    return c*c*(pi-p0);
+double getKernelFunctionLaplacianViscosity(Vec3 r, double h){
+    double r_norm = r.norm();
+    if(0.f <= r_norm && r_norm <= h){
+        double h5 = h*h*h*h*h;
+        //Vec3 value =  -r*45.f/(3.14159192*h6*r_norm)*h_r*h_r;
+        //if(value.dot(r)>=0) return value;
+        return 45.f/(3.14159192*h5)*(1.f-r_norm/h);
+    }
+    return 0.f;
+}
+
+double getKernelFunctionCubicSpline(Vec3 r, double h){
+    double r_norm = r.norm();
+    double q = r_norm/h;
+    double sigma = 8/(3.141519192*h*h*h);
+    if(0.f <= q && q <= 1/2.f){
+        return sigma*6.f*(q*q*q-q*q)+1.f;
+    }
+    if(1/2.f <= q <= 1.f){
+        return sigma*2.f*(1.f-q)*(1.f-q)*(1.f-q);
+    }
+    return 0;
+}
+
+double SceneSPHWaterCube::getPressureFunctionSound(double pi, double p0){
+    double pressure = k*(pi/p0-1.f);
+    if(pressure>=0.f) return pressure;
+    return 0.0;
+}
+
+double SceneSPHWaterCube::getPressureFunctionStateEquation(double pi, double p0){
+    double pressure = c*c*(pi-p0);
+    if(pressure>=0.f) return pressure;
+    return 0.0;
+}
+
+double getPijMeanDensitySquare(Particle* pi, Particle* pj){
+    return -pj->mass*(pi->pressure/(pi->density*pi->density) + pj->pressure/(pj->density*pj->density));
+}
+
+Vec3 getVijMeanDensitySquare(Particle* pi, Particle* pj){
+    return pj->mass*(pj->vel-pi->vel)/(pi->density*pj->density);
 }
 
 void SceneSPHWaterCube::update() {
     double dt = timeStep;
     c = widget->getC()*dt; //20.04757082400839/s;
+    k = widget->getK()*dt; //20.04757082400839/s;
 
     hash->create(system.getParticles());
 
-    double h = sqrt(water_radius*water_radius*4.f + water_radius*water_radius*4.f)*widget->getHReduction();
-    double p0 = widget->getRestDensity();
-    for(int i=0; i<system.getNumParticles();i++) {
-        Particle *pi = system.getParticles()[i];
-        // find neighbors
-        hash->query(pi->pos,h);
+    if(widget->getSPHMethod() == SPHMethod::FullyCompressible){
+        double h = sqrt(water_radius*water_radius*4.f + water_radius*water_radius*4.f)*widget->getHReduction();
+        double p0 = widget->getRestDensity();
+        for(int i=0; i<system.getNumParticles();i++) {
+            Particle *pi = system.getParticles()[i];
+            // find neighbors
+            hash->query(pi->pos,h);
 
-        // calculate density
-        pi->density = 0.f;
-        for(unsigned int nr=0; nr<hash->querySize;nr++){
-            Particle *pj = system.getParticles()[hash->queryIds[nr]];
-            double k = kernelFunctionSpiky(pi->pos-pj->pos,h);
-            if(k) pi->density += pj->mass*k;
-        }
-
-    // calculate pressure
-    pi->pressure = pressureFunction(pi->density,p0);
-    }
-
-    for(int i=0; i<system.getNumParticles();i++) {
-        Particle *pi = system.getParticles()[i];
-        // find neighbors
-        hash->query(pi->pos,h);
-
-        Vec3 a_pressure = Vec3(0.f,0.f,0.f);
-        for(unsigned int nr=0; nr<hash->querySize;nr++){
-            Particle *pj = system.getParticles()[hash->queryIds[nr]];
-            if(pi->id != pj->id){
-                double p_ij = -pj->mass*(pi->pressure/(pi->density*pi->density) + pj->pressure/(pj->density*pj->density));
-                Vec3 k = kernelFunctionGradientSpiky(pi->pos-pj->pos,h);
-                if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
+            // calculate density
+            pi->density = 0.f;
+            for(unsigned int nr=0; nr<hash->querySize;nr++){
+                Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                double k = getKernelFunctionSpiky(pi->pos-pj->pos,h);
+                if(k) pi->density += pj->mass*k;
             }
+
+        // calculate pressure
+        pi->pressure = getPressureFunctionSound(pi->density,p0);
         }
-        fSPHSystem[i]->setAcceleration(a_pressure);
+
+        for(int i=0; i<system.getNumParticles();i++) {
+            Particle *pi = system.getParticles()[i];
+            // find neighbors
+            hash->query(pi->pos,h);
+
+            Vec3 a_pressure = Vec3(0.f,0.f,0.f);
+            for(unsigned int nr=0; nr<hash->querySize;nr++){
+                Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                if(pi->id != pj->id){
+                    double p_ij = getPijMeanDensitySquare(pi,pj);
+                    Vec3 k = getKernelFunctionGradientSpiky(pi->pos-pj->pos,h);
+                    if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
+                }
+            }
+            fSPHSystem[i]->setForce(pi->mass*a_pressure);
+        }
+
+        // integration step
+        Vecd ppos = system.getPositions();
+        integrator.step(system, dt);
+        system.setPreviousPositions(ppos);
+    } else if (widget->getSPHMethod() == SPHMethod::WeaklyCompressible){
+
+        // 1. for all particle i reconstruct density pi
+        double h = sqrt(water_radius*water_radius*4.f + water_radius*water_radius*4.f)*widget->getHReduction();
+        double v = widget->getKinematicViscosity();
+        double mu = widget->getMu();
+        double p0 = widget->getRestDensity();
+        for(int i=0; i<system.getNumParticles();i++) {
+            Particle *pi = system.getParticles()[i];
+            // find neighbors
+            hash->query(pi->pos,h);
+
+            // calculate density
+            pi->density = 0.f;
+            for(unsigned int nr=0; nr<hash->querySize;nr++){
+                Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                double k = getKernelFunctionCubicSpline(pi->pos-pj->pos,h);
+                if(k) pi->density += pj->mass*k;
+            }
+            pi->pressure = getPressureFunctionStateEquation(pi->density,p0);
+        }
+
+        // 2. for all particle i compute viscocity and predicted velocity
+        for(int i=0; i<system.getNumParticles();i++) {
+            Particle *pi = system.getParticles()[i];
+            // find neighbors
+            hash->query(pi->pos,h);
+
+            Vec3 laplacian_velocity = Vec3(0.f,0.f,0.f);
+            for(unsigned int nr=0; nr<hash->querySize;nr++){
+                Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                if(pi->id != pj->id){
+                    Vec3 v_ij = getVijMeanDensitySquare(pi,pj);
+                    double k = getKernelFunctionLaplacianViscosity(pi->pos-pj->pos,h);
+                    if(k) laplacian_velocity += v_ij*k;
+                }
+            }
+            Vec3 fSPHViscosity = pi->mass*mu*laplacian_velocity;
+            pi->vel += dt/pi->mass*(fSPHViscosity+fGravity->getAcceleration()*pi->mass);
+        }
+
+        // 3. for all particle i compute pressure
+        for(int i=0; i<system.getNumParticles();i++) {
+            Particle *pi = system.getParticles()[i];
+            // find neighbors
+            hash->query(pi->pos,h);
+
+            Vec3 a_pressure = Vec3(0.f,0.f,0.f);
+            for(unsigned int nr=0; nr<hash->querySize;nr++){
+                Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                if(pi->id != pj->id){
+                    double p_ij = getPijMeanDensitySquare(pi,pj);
+                    Vec3 k = getKernelFunctionGradientSpiky(pi->pos-pj->pos,h);
+                    if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
+                }
+            }
+            Vec3 fSPHPressure = a_pressure;
+
+            pi->vel += dt/pi->mass*(fSPHPressure);
+            pi->pos += dt*pi->vel;
+        }
+
+
+
     }
 
-    // integration step
-    Vecd ppos = system.getPositions();
-    integrator.step(system, dt);
-    system.setPreviousPositions(ppos);
+
 
 
     // collisions
@@ -468,7 +829,7 @@ void SceneSPHWaterCube::update() {
         }
 
         // AABB collider
-        while (colliderCube.testCollision(pi)) {
+        if (colliderCube.testCollision(pi)) {
             colliderCube.resolveCollision(pi, bouncing, friction, dt);
         }
     }

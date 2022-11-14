@@ -9,8 +9,6 @@ WidgetSPHWaterCube::WidgetSPHWaterCube(QWidget *parent) :
 
     connect(ui->btnUpdate, &QPushButton::clicked, this,
             [=] (void) { emit updatedParameters(); });
-    connect(ui->pushButton_release_lock, &QPushButton::clicked, this,
-            [=] (void) { emit releasedLockedParticles(); });
 }
 
 WidgetSPHWaterCube::~WidgetSPHWaterCube()
@@ -42,14 +40,18 @@ double WidgetSPHWaterCube::getC() const {
     return ui->spinBox_c->value();
 }
 
-bool WidgetSPHWaterCube::getRenderParticles() const {
-    return ui->checkBox_particles->isChecked();
+double WidgetSPHWaterCube::getK() const {
+    return ui->spinBox_k->value();
 }
 
-bool WidgetSPHWaterCube::getRenderCloth() const {
-    return ui->checkBox_cloth->isChecked();
+double WidgetSPHWaterCube::getKinematicViscosity() const {
+    return ui->spinBox_kinematic_viscosity->value();
 }
 
-bool WidgetSPHWaterCube::getSelfCollisions() const {
-    return ui->checkBox_selfcollisions->isChecked();
+double WidgetSPHWaterCube::getMu() const {
+    return ui->spinBox_mu->value();
+}
+
+int WidgetSPHWaterCube::getSPHMethod() const {
+    return ui->comboBox->currentIndex();
 }
