@@ -79,9 +79,9 @@ protected:
     QVector<Particle*> boundaryParticles;
     float water_radius=1.f;
     double c=0.f,k=0.f;
-    Vec3i poolSize = Vec3i(18,5,18);
-    Vec3i dropSize = Vec3i(18,18,18);
-    Vec3 boundarySize = Vec3(18,24,18);
+    Vec3i poolSize = Vec3i(25,5,25);
+    Vec3i dropSize = Vec3i(25,25,25);
+    Vec3 boundarySize = Vec3(25,30,25);
     int mouseX, mouseY;
 
     Hash *hash;

@@ -3,6 +3,11 @@
 
 #include "defines.h"
 
+enum ParticleType {
+    NotBoundary=0,
+    Boundary=1,
+};
+
 class Particle
 {
 public:
@@ -15,7 +20,7 @@ public:
     double mass;
     float density;
     float pressure;
-    int type = 0; // 1 is boundary, else 0
+    int type = ParticleType::NotBoundary; // 1 is boundary, else 0
     double radius = 1.0;
     double life   = 0.0;
     Vec3 color    = Vec3(1, 1, 1);
@@ -30,6 +35,7 @@ public:
         prevPos = pos;
         mass    = 1.0;
         lock = false;
+        type = ParticleType::NotBoundary;
     }
 
     Particle(const Vec3& p, const Vec3& v, float m, double timeStep) {
@@ -39,6 +45,7 @@ public:
         prevPos = pos - timeStep*vel;
         mass	= m;
         lock = false;
+        type = ParticleType::NotBoundary;
     }
 
     Particle(const Vec3& p, const Vec3& v, float m) {
@@ -48,6 +55,7 @@ public:
         prevPos = pos;
         mass	= m;
         lock = false;
+        type = ParticleType::NotBoundary;
     }
 
     Particle(const Vec3& p) {
@@ -57,6 +65,7 @@ public:
         prevPos = pos;
         mass    = 1.0;
         lock = false;
+        type = ParticleType::NotBoundary;
     }
 
     Particle(const Vec3& p, int id_h, int id_w) {
@@ -66,6 +75,7 @@ public:
         prevPos = pos;
         mass    = 1.0;
         lock = false;
+        type = ParticleType::NotBoundary;
         id_height = id_h;
         id_width= id_w;
     }
@@ -80,7 +90,8 @@ public:
         color   = p.color;
         radius  = p.radius;
         life    = p.life;
-        lock = false;
+        lock = p.lock;
+        type = p.type;
     }
 
     ~Particle() {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>247</width>
-    <height>578</height>
+    <width>280</width>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,7 +91,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>150</height>
+       <height>120</height>
       </size>
      </property>
      <property name="title">
@@ -139,19 +139,6 @@
        <string>Blackhole</string>
       </property>
      </widget>
-     <widget class="QRadioButton" name="radioButton_4">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>120</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Cloth Particles</string>
-      </property>
-     </widget>
     </widget>
    </item>
    <item row="2" column="0" colspan="2">
@@ -159,7 +146,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>240</height>
+       <height>280</height>
       </size>
      </property>
      <property name="baseSize">
@@ -226,7 +213,7 @@
        <double>0.010000000000000</double>
       </property>
       <property name="value">
-       <double>0.650000000000000</double>
+       <double>0.950000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="spinBox_rest_density">
@@ -248,7 +235,7 @@
        <double>0.000100000000000</double>
       </property>
       <property name="value">
-       <double>0.002387000000000</double>
+       <double>0.002000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="spinBox_c">
@@ -267,7 +254,7 @@
        <double>1500.000000000000000</double>
       </property>
       <property name="value">
-       <double>20.047570000000000</double>
+       <double>300.000000000000000</double>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox">
@@ -360,6 +347,19 @@
       </property>
       <property name="value">
        <double>20.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnDefaultParameters">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>240</y>
+        <width>201</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Default Parameters</string>
       </property>
      </widget>
     </widget>

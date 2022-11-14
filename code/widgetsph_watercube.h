@@ -27,6 +27,7 @@ public:
     bool getRenderParticles() const;
     bool getRenderCloth() const;
     bool getSelfCollisions() const;
+    void setDefaultParameters();
 
 signals:
     void updatedParameters();

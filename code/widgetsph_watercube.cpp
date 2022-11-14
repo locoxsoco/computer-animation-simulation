@@ -1,6 +1,24 @@
 #include "widgetsph_watercube.h"
 #include "ui_widgetsph_watercube.h"
 
+enum comboBoxSPHMethod {
+    FullyCompressibleMethod = 0,
+    WeaklyCompressibleMethod = 1
+};
+
+void WidgetSPHWaterCube::setDefaultParameters(){
+    if(ui->comboBox->currentIndex() == comboBoxSPHMethod::FullyCompressibleMethod){
+        ui->spinBox_h_reduction->setValue(0.95f);
+        ui->spinBox_rest_density->setValue(0.002000f);
+        ui->spinBox_c->setValue(300.f);
+        ui->spinBox_k->setValue(20.f);
+        ui->spinBox_kinematic_viscosity->setValue(0.f);
+        ui->spinBox_mu->setValue(0.f);
+    }else if(ui->comboBox->currentIndex() == comboBoxSPHMethod::WeaklyCompressibleMethod){
+
+    }
+}
+
 WidgetSPHWaterCube::WidgetSPHWaterCube(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WidgetSPHWaterCube)
@@ -8,7 +26,10 @@ WidgetSPHWaterCube::WidgetSPHWaterCube(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->btnUpdate, &QPushButton::clicked, this,
-            [=] (void) { emit updatedParameters(); });
+            [=] (void) { emit updatedParameters();});
+
+    connect(ui->btnDefaultParameters, &QPushButton::clicked, this,
+            [=] (void) { setDefaultParameters();});
 }
 
 WidgetSPHWaterCube::~WidgetSPHWaterCube()
