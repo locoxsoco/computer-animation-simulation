@@ -696,9 +696,8 @@ double getPijMeanDensitySquare(Particle* pi, Particle* pj){
     return -pj->mass*(pi->pressure/(pi->density*pi->density) + pj->pressure/(pj->density*pj->density));
 }
 
-// TODO: Is the equation ok?
 double getPijMeanDensitySquareBoundary(Particle* pi, Particle* pj){
-    return -pj->mass*(pi->pressure/(pi->density*pi->density) + pi->pressure/(pi->density*pi->density));
+    return -pj->mass*2*(pi->pressure/(pi->density*pi->density));
 }
 
 Vec3 getVijMeanDensitySquare(Particle* pi, Particle* pj){
@@ -806,7 +805,6 @@ void SceneSPHWaterCube::update() {
                 if(pi->id != pj->id){
                     double p_ij;
                     if(pi->type){
-                        // TODO: will it always be positive
                          p_ij = getPijMeanDensitySquareBoundary(pi,pj);
                     } else {
                         p_ij = getPijMeanDensitySquare(pi,pj);
@@ -815,10 +813,11 @@ void SceneSPHWaterCube::update() {
                     if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
                 }
             }
-            Vec3 fSPHPressure = a_pressure;
-
-            pi->vel += dt/pi->mass*(fSPHPressure);
-            pi->pos += dt*pi->vel;
+            Vec3 fSPHPressure = pi->mass*a_pressure;
+            if(!pi->type){
+                pi->vel += dt/pi->mass*(fSPHPressure);
+                pi->pos += dt*pi->vel;
+            }
         }
 
 
