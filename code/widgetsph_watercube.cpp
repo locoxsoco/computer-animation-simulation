@@ -14,11 +14,17 @@ void WidgetSPHWaterCube::setDefaultParameters(){
         ui->spinBox_c->setValue(300.f);
         ui->spinBox_k->setValue(20.f);
         ui->spinBox_kinematic_viscosity->setValue(0.f);
-    }else if(ui->comboBox->currentIndex() == comboBoxSPHMethod::WeaklyCompressibleMethod ||ui->comboBox->currentIndex() == comboBoxSPHMethod::IterativeWeaklyCompressibleMethod  ){
+    }else if(ui->comboBox->currentIndex() == comboBoxSPHMethod::WeaklyCompressibleMethod){
         ui->spinBox_h_reduction->setValue(0.7f);
         ui->spinBox_rest_density->setValue(0.004000f);
         ui->spinBox_c->setValue(300.f);
         ui->spinBox_k->setValue(7.f);
+        ui->spinBox_kinematic_viscosity->setValue(0.f);
+    }else if(ui->comboBox->currentIndex() == comboBoxSPHMethod::IterativeWeaklyCompressibleMethod  ){
+        ui->spinBox_h_reduction->setValue(0.7f);
+        ui->spinBox_rest_density->setValue(0.004000f);
+        ui->spinBox_c->setValue(300.f);
+        ui->spinBox_k->setValue(2.f);
         ui->spinBox_kinematic_viscosity->setValue(0.f);
     }
 }
@@ -50,7 +56,7 @@ int WidgetSPHWaterCube::getBlackholeIntensity() const {
 }
 
 int WidgetSPHWaterCube::getMovableObjectId() const {
-    return ui->radioButton->isChecked()?0:ui->radioButton_2->isChecked()?1:ui->radioButton_3->isChecked()?2:3;
+    return ui->radioButton->isChecked()?0:ui->radioButton_2->isChecked()?1:2;
 }
 
 double WidgetSPHWaterCube::getHReduction() const {

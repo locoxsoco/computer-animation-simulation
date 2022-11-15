@@ -91,7 +91,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>120</height>
+       <height>90</height>
       </size>
      </property>
      <property name="title">
@@ -124,19 +124,6 @@
       </property>
       <property name="text">
        <string>Box</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_3">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>112</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Blackhole</string>
       </property>
      </widget>
     </widget>
