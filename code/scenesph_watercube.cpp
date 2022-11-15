@@ -498,7 +498,6 @@ void SceneSPHWaterCube::updateSimParams()
     // get gravity from UI and update force
     double g = widget->getGravity();
     fGravity->setAcceleration(Vec3(0, -g, 0));
-    fBlackhole->setIntensity(widget->getBlackholeIntensity());
 
     // get other relevant UI values and update simulation params
     maxParticleLife = 20.0;
@@ -907,6 +906,7 @@ void SceneSPHWaterCube::update() {
             for(int i=0; i<system.getNumParticles();i++) {
                 Particle *pi = system.getParticles()[i];
                 if(pi->type == ParticleType::NotBoundary){
+                    if(pi->density-p0<0.0001) continue; // if density is similiar to density 0 it should stop too
                     // find neighbors
                     hash->query(pi->pos,h);
 
@@ -925,6 +925,7 @@ void SceneSPHWaterCube::update() {
                 // find neighbors
                 hash->query(pi->pos,h);
                 if(pi->type == ParticleType::NotBoundary){
+                    if(pi->density-p0<0.0001) continue; // if density is similiar to density 0 it should stop too
                     Vec3 a_pressure = Vec3(0.f,0.f,0.f);
                     for(unsigned int nr=0; nr<hash->querySize;nr++){
                         Particle *pj = system.getParticles()[hash->queryIds[nr]];

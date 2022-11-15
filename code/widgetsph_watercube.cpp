@@ -51,10 +51,6 @@ double WidgetSPHWaterCube::getGravity() const {
     return ui->gravity->value();
 }
 
-int WidgetSPHWaterCube::getBlackholeIntensity() const {
-    return ui->horizontalSlider->value();
-}
-
 int WidgetSPHWaterCube::getMovableObjectId() const {
     return ui->radioButton->isChecked()?0:ui->radioButton_2->isChecked()?1:2;
 }

@@ -15,7 +15,6 @@ public:
     ~WidgetSPHWaterCube();
 
     double getGravity()    const;
-    int getBlackholeIntensity()    const;
     int getMovableObjectId() const;
     int getSPHMethod() const;
     double getHReduction() const;
@@ -23,9 +22,6 @@ public:
     double getC() const;
     double getK() const;
     double getKinematicViscosity() const;
-    bool getRenderParticles() const;
-    bool getRenderCloth() const;
-    bool getSelfCollisions() const;
     void setDefaultParameters();
 
 signals:
