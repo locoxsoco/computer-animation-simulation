@@ -108,7 +108,7 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
     // create drop particles
     Vec3 dropCenter = Vec3(
                 colliderCube.pos.x(),
-                colliderCube.pos.y()+colliderCube.scale.y()-dropSize.y()/2.f,
+                colliderCube.pos.y()+colliderCube.scale.y()*3.f/4.f-dropSize.y()/2.f,
                 colliderCube.pos.z()
                 );
     for(int i=-dropSize.y()/2;i<dropSize.y()/2;i++)
@@ -333,7 +333,7 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
     // create drop particles
     Vec3 dropCenter = Vec3(
                 colliderCube.pos.x(),
-                colliderCube.pos.y()+colliderCube.scale.y()-dropSize.y()/2.f,
+                colliderCube.pos.y()+colliderCube.scale.y()*3.f/4.f-dropSize.y()/2.f,
                 colliderCube.pos.z()
                 );
     for(int i=-dropSize.y()/2;i<dropSize.y()/2;i++)
@@ -347,7 +347,7 @@ void SceneSPHWaterCube::reset(double dt, double bo, double fr, unsigned int drag
                             );
                 if(Vec3(j*2,i*2,k*2).norm()*2.f<=dropSize.x()){
                     Particle *p =new Particle(pos);
-                    p->color = Vec3(153/255.0, 217/255.0, 234/255.0);
+                    p->color = Vec3(95/255.0, 150/255.0, 165/255.0);
                     p->mass = 0.01;
                     p->type = ParticleType::NotBoundary;
                     p->density = p0;
@@ -651,7 +651,7 @@ Vec3 getKernelFunctionGradientPoly(Vec3 r, double h){
     if(0.f <= r_norm && r_norm <= h){
         double h2_r2 = h*h - r_norm*r_norm;
         double h9 = h*h*h*h*h*h*h*h*h;
-        return r*945.f/(32.f*3.14159192*h9)*h2_r2*h2_r2;
+        return -r*945.f/(32.f*3.14159192*h9)*h2_r2*h2_r2;
     }
     return Vec3(0.f,0.f,0.f);
 }
@@ -671,11 +671,18 @@ Vec3 getKernelFunctionGradientSpiky(Vec3 r, double h){
     if(0.f <= r_norm && r_norm <= h){
         double h_r = h - r_norm;
         double h6 = h*h*h*h*h*h;
-        //Vec3 value =  -r*45.f/(3.14159192*h6*r_norm)*h_r*h_r;
-        //if(value.dot(r)>=0) return value;
         return -r*45.f/(3.14159192*h6*r_norm)*h_r*h_r;
     }
     return Vec3(0.f,0.f,0.f);
+}
+
+double getKernelFunctionLaplacianViscosity(Vec3 r, double h){
+    double r_norm = r.norm();
+    if(0.f <= r_norm && r_norm <= h){
+        double h5 = h*h*h*h*h;
+        return 45.f/(3.14159192*h5)*(1.f-r_norm/h);
+    }
+    return 0.f;
 }
 
 double getKernelFunctionCubicSpline(Vec3 r, double h){
@@ -704,17 +711,6 @@ Vec3 getKernelFunctionGradientCubicSpline(Vec3 r, double h){
     return Vec3(0.f,0.f,0.f);
 }
 
-double getKernelFunctionLaplacianViscosity(Vec3 r, double h){
-    double r_norm = r.norm();
-    if(0.f <= r_norm && r_norm <= h){
-        double h5 = h*h*h*h*h;
-        //Vec3 value =  -r*45.f/(3.14159192*h6*r_norm)*h_r*h_r;
-        //if(value.dot(r)>=0) return value;
-        return 45.f/(3.14159192*h5)*(1.f-r_norm/h);
-    }
-    return 0.f;
-}
-
 double getKernelFunctionLaplacianViscosityImproved(Vec3 r, double h){
     double r_norm = r.norm();
     if(0.f <= r_norm && r_norm <= h){
@@ -736,7 +732,7 @@ double SceneSPHWaterCube::getPressureFunctionSound(double pi, double p0){
 }
 
 double getPijMeanDensitySquare(Particle* pi, Particle* pj){
-    return pj->mass*(pi->pressure/(pi->density*pi->density) + pj->pressure/(pj->density*pj->density));
+    return -pj->mass*(pi->pressure/(pi->density*pi->density) + pj->pressure/(pj->density*pj->density));
 }
 
 double getPijMeanDensitySquareBoundary(Particle* pi, Particle* pj){
@@ -767,7 +763,7 @@ void SceneSPHWaterCube::update() {
             pi->density = 0.f;
             for(unsigned int nr=0; nr<hash->querySize;nr++){
                 Particle *pj = system.getParticles()[hash->queryIds[nr]];
-                double k = getKernelFunctionPoly(pi->pos-pj->pos,h);
+                double k = getKernelFunctionSpiky(pi->pos-pj->pos,h);
                 if(k) pi->density += pj->mass*k;
             }
 
@@ -791,7 +787,7 @@ void SceneSPHWaterCube::update() {
                     } else {
                         p_ij = getPijMeanDensitySquare(pi,pj);
                     }
-                    Vec3 k = getKernelFunctionGradientPoly(pi->pos-pj->pos,h);
+                    Vec3 k = getKernelFunctionGradientSpiky(pi->pos-pj->pos,h);
                     if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
                 }
             }
@@ -872,10 +868,10 @@ void SceneSPHWaterCube::update() {
         }
     } else if (widget->getSPHMethod() == SPHMethod::IterativeWeaklyCompressible){
 
-        // 1. for all particle i compute non-pressure accel
         double h = sqrt(water_radius*water_radius*4.f + water_radius*water_radius*4.f)*widget->getHReduction();
         double v = widget->getKinematicViscosity();
         double p0 = widget->getRestDensity();
+        // 1. for all particle i compute non-pressure accel
         for(int i=0; i<system.getNumParticles();i++) {
             Particle *pi = system.getParticles()[i];
             // find neighbors
@@ -895,9 +891,9 @@ void SceneSPHWaterCube::update() {
             pi->vel += dt*(aSPHViscosity+fGravity->getAcceleration());
         }
 
-        // 2. for all particle i iterate until density i  similar to density 0, or iter_max
+        // 2. for all particle i iterate until density i similar to density 0, or iter_max
         int iter_max = 0;
-        while(iter_max<2){
+        while(iter_max<1){
             iter_max++;
             for(int i=0; i<system.getNumParticles();i++) {
                 Particle *pi = system.getParticles()[i];

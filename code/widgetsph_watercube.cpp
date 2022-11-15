@@ -18,9 +18,8 @@ void WidgetSPHWaterCube::setDefaultParameters(){
         ui->spinBox_h_reduction->setValue(0.7f);
         ui->spinBox_rest_density->setValue(0.004000f);
         ui->spinBox_c->setValue(300.f);
-        ui->spinBox_k->setValue(19.f);
+        ui->spinBox_k->setValue(7.f);
         ui->spinBox_kinematic_viscosity->setValue(0.f);
-
     }
 }
 

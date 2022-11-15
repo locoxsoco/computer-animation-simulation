@@ -213,7 +213,7 @@
        <double>0.010000000000000</double>
       </property>
       <property name="value">
-       <double>0.950000000000000</double>
+       <double>0.700000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="spinBox_rest_density">
@@ -235,7 +235,7 @@
        <double>0.000100000000000</double>
       </property>
       <property name="value">
-       <double>0.002000000000000</double>
+       <double>0.004000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="spinBox_c">
@@ -265,6 +265,9 @@
         <width>171</width>
         <height>24</height>
        </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
       </property>
       <item>
        <property name="text">
@@ -334,7 +337,7 @@
        </rect>
       </property>
       <property name="value">
-       <double>20.000000000000000</double>
+       <double>7.000000000000000</double>
       </property>
      </widget>
      <widget class="QPushButton" name="btnDefaultParameters">
@@ -347,7 +350,20 @@
        </rect>
       </property>
       <property name="text">
-       <string>Default Parameters</string>
+       <string>Press me pleeeeeeease</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>231</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Please press when changing method</string>
       </property>
      </widget>
     </widget>
