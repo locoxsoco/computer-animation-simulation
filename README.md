@@ -1,5 +1,51 @@
 # computer-animation-simulation
 
+## Lab 3: SPH Fluid Simulation
+
+<img src="./images/Lab3/Lab3.gif" width="480" height="516">
+
+### Methods
+#### Fully Compressible Method
+- Simplest version
+- Water compress too much
+- Speed of sound for pressure
+- Spiky Kernel shows better results than Poly6
+- The most simple model -> does not shows the best results
+- Less parameters to modify -> more try and error to get good results
+#### Weakly Compressible Method
+- Eurographics 2019 approach
+- State Equation for pressure
+- Added boundary particles
+- Tried to use Cubic Spline kernel, but failed
+#### Iterative Weakly Compressible Method
+- Iterate until convergence or timeout
+- Results are very similar to Weakly Compressible Method, but with a lower stiffness
+
+### Kernel Equations
+#### Poly6
+The most easy to understand, not recommended to use for pressure nor viscosity though.
+#### Spiky
+Easy to understand, nice results when applied
+#### Viscosity Gradient kernel
+Recommended for viscosity instead of Poly6 nor Spiky
+#### CubicSpline
+The kernel does not give me plausible results, and probably I misscalculated the gradient derivative, so I end up not using it
+
+### Pressure Equation
+#### Speed of sound
+- Used for the Fully Compressible Method
+- Not an intuitive parameter to modify
+#### State Equation
+- Set stiffness as parameter
+- Used for the Weakly Compressible Methods
+- More intuitive to understand and modify
+
+### Boundary Particles
+- Used in the Weakly Compressible Methods.
+- Helps with the collission in extreme situations and avoid crashes.
+- With the uncorrect parameters and situation, it can act as a glue for the particles, sticking them in the cube walls.
+
+
 ## Lab 2: Cloth Simulation
 
 <img src="./images/Lab2/Lab2.gif" width="480" height="516">
