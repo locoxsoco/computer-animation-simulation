@@ -806,37 +806,41 @@ void SceneSPHWaterCube::update() {
         double p0 = widget->getRestDensity();
         for(int i=0; i<system.getNumParticles();i++) {
             Particle *pi = system.getParticles()[i];
-            // find neighbors
-            hash->query(pi->pos,h);
+            if(pi->type == ParticleType::NotBoundary){
+                // find neighbors
+                hash->query(pi->pos,h);
 
-            // calculate density
-            pi->density = 0.f;
-            for(unsigned int nr=0; nr<hash->querySize;nr++){
-                Particle *pj = system.getParticles()[hash->queryIds[nr]];
-                double k = getKernelFunctionSpiky(pi->pos-pj->pos,h);
-                if(k) pi->density += pj->mass*k;
+                // calculate density
+                pi->density = 0.f;
+                for(unsigned int nr=0; nr<hash->querySize;nr++){
+                    Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                    double k = getKernelFunctionSpiky(pi->pos-pj->pos,h);
+                    if(k) pi->density += pj->mass*k;
+                }
+                pi->pressure = getPressureFunctionStateEquation(pi->density,p0);
             }
-            pi->pressure = getPressureFunctionStateEquation(pi->density,p0);
         }
 
         // 2. for all particle i compute viscocity and predicted velocity
         for(int i=0; i<system.getNumParticles();i++) {
             Particle *pi = system.getParticles()[i];
-            // find neighbors
-            hash->query(pi->pos,h);
+            if(pi->type == ParticleType::NotBoundary){
+                // find neighbors
+                hash->query(pi->pos,h);
 
-            Vec3 laplacian_velocity = Vec3(0.f,0.f,0.f);
-            for(unsigned int nr=0; nr<hash->querySize;nr++){
-                Particle *pj = system.getParticles()[hash->queryIds[nr]];
-                if(pi->id != pj->id){
-                    Vec3 v_ij = getVijMeanDensitySquare(pi,pj);
-                    double k = getKernelFunctionLaplacianViscosity(pi->pos-pj->pos,h);
-                    //double k = getKernelFunctionLaplacianViscosityImproved(pi->pos-pj->pos,h);
-                    if(k) laplacian_velocity += v_ij*k;
+                Vec3 laplacian_velocity = Vec3(0.f,0.f,0.f);
+                for(unsigned int nr=0; nr<hash->querySize;nr++){
+                    Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                    if(pi->id != pj->id){
+                        Vec3 v_ij = getVijMeanDensitySquare(pi,pj);
+                        double k = getKernelFunctionLaplacianViscosity(pi->pos-pj->pos,h);
+                        //double k = getKernelFunctionLaplacianViscosityImproved(pi->pos-pj->pos,h);
+                        if(k) laplacian_velocity += v_ij*k;
+                    }
                 }
+                Vec3 fSPHViscosity = pi->mass*v*laplacian_velocity;
+                pi->vel += dt/pi->mass*(fSPHViscosity+fGravity->getAcceleration()*pi->mass);
             }
-            Vec3 fSPHViscosity = pi->mass*v*laplacian_velocity;
-            pi->vel += dt/pi->mass*(fSPHViscosity+fGravity->getAcceleration()*pi->mass);
         }
 
         // 3. for all particle i compute pressure
@@ -844,26 +848,25 @@ void SceneSPHWaterCube::update() {
             Particle *pi = system.getParticles()[i];
             // find neighbors
             hash->query(pi->pos,h);
-
-            Vec3 a_pressure = Vec3(0.f,0.f,0.f);
-            for(unsigned int nr=0; nr<hash->querySize;nr++){
-                Particle *pj = system.getParticles()[hash->queryIds[nr]];
-                if(pi->id != pj->id){
-                    double p_ij;
-                    if(pj->type == ParticleType::Boundary){
-                         p_ij = getPijMeanDensitySquareBoundary(pi,pj);
-                    } else {
-                        p_ij = getPijMeanDensitySquare(pi,pj);
-                    }
-                    Vec3 k = getKernelFunctionGradientSpiky(pi->pos-pj->pos,h);
-                    //Vec3 k = getKernelFunctionGradientCubicSpline(pi->pos-pj->pos,h);
-                    if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
-                }
-            }
-            Vec3 fSPHPressure = pi->mass*a_pressure;
             if(pi->type == ParticleType::NotBoundary){
-                pi->vel += dt/pi->mass*(fSPHPressure);
-                pi->pos += dt*pi->vel;
+                Vec3 a_pressure = Vec3(0.f,0.f,0.f);
+                for(unsigned int nr=0; nr<hash->querySize;nr++){
+                    Particle *pj = system.getParticles()[hash->queryIds[nr]];
+                    if(pi->id != pj->id){
+                        double p_ij;
+                        if(pj->type == ParticleType::Boundary){
+                             p_ij = getPijMeanDensitySquareBoundary(pi,pj);
+                        } else {
+                            p_ij = getPijMeanDensitySquare(pi,pj);
+                        }
+                        Vec3 k = getKernelFunctionGradientSpiky(pi->pos-pj->pos,h);
+                        //Vec3 k = getKernelFunctionGradientCubicSpline(pi->pos-pj->pos,h);
+                        if(k != Vec3(0.f,0.f,0.f)) a_pressure += p_ij*k;
+                    }
+                }
+                Vec3 fSPHPressure = pi->mass*a_pressure;
+                    pi->vel += dt/pi->mass*(fSPHPressure);
+                    pi->pos += dt*pi->vel;
             }
         }
     } else if (widget->getSPHMethod() == SPHMethod::IterativeWeaklyCompressible){
