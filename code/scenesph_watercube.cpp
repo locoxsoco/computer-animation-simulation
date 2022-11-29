@@ -61,7 +61,7 @@ void SceneSPHWaterCube::initialize(double dt, double bo, double fr, unsigned int
     system.addForce(fGravity);
 
     // create blackhole force
-    fBlackhole = new ForceBlackhole(Vec3(50, 50, 50), 100);
+    fBlackhole = new ForceBlackhole();
     system.addForce(fBlackhole);
 
     // Adding wind force
